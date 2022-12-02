@@ -118,7 +118,7 @@ async function insert(
     })
     .select();
 
-  const res = await supabase.from("words").upsert(
+  const res = await supabase.from("words").insert(
     [...synonymes, ...antonymes, ...familiers].map((word) => ({
       id: cuid(),
       word,
@@ -134,13 +134,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { word, id } = await getWord();
+  const word = req.query.word as string;
   const definition = await getDefintion(word);
   const synonymes = await getSynonymes(word);
   const antonymes = await getAntonymes(word);
   const familiers = await getFamiliers(word);
   await insert(word, synonymes, antonymes, familiers, definition);
-  await setDone(id);
 
-  res.status(200).json({ word, synonymes, antonymes, familiers, definition });
+  res
+    .status(200)
+    .json({ mot: word, synonymes, antonymes, familiers, definition });
 }
