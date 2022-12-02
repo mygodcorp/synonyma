@@ -1,6 +1,4 @@
-interface LayoutProps {
-  children: React.ReactNode;
-}
+import "styles/globals.css";
 
 interface LayoutProps {
   children: React.ReactNode;
