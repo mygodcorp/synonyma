@@ -126,7 +126,7 @@ async function insert(
         word,
         done: false,
       })),
-      { ignoreDuplicates: false }
+      { onConflict: "word", ignoreDuplicates: true }
     )
     .select();
 
