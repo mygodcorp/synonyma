@@ -1,3 +1,9 @@
 export default function Page() {
-  return <div className="space-y-4">Hello</div>;
+  return (
+    <>
+      <title>Tous les synonymes</title>
+      <meta name="description" content="Tous les synonymes"></meta>
+      <div>Synonymes</div>
+    </>
+  );
 }
