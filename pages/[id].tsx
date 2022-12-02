@@ -35,7 +35,7 @@ function Synonym(props: SynonymT) {
         <p>{props.definition}</p>
         <ul>
           {props.synonymes.map((synonyme) => (
-            <li>
+            <li key={synonyme}>
               <a ref={ref} href={synonyme}>
                 {synonyme}
               </a>
