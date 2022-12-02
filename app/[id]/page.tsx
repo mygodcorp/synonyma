@@ -19,7 +19,10 @@ async function getData(id: string): Promise<SynonymT> {
     .eq("mot", id)
     .single();
   if (!data) {
-    const res = await fetch(`http://localhost:3001/api/ask/${id}`);
+    console.log(`${process.env.NEXT_PUBLIC_BASE_URL}/api/ask/${id}`);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/ask/${id}`
+    );
     const data = await res.json();
     return data;
   }
