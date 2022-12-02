@@ -58,6 +58,12 @@ export const getStaticProps: GetStaticProps<{
     .select("*")
     .eq("mot", context.params?.id)
     .single();
+  if (!data) {
+    // If there is a server error, you might want to
+    // throw an error instead of returning so that the cache is not updated
+    // until the next successful request.
+    throw new Error(`Failed to fetch posts, received status ${error?.code}`);
+  }
   return {
     props: data,
     revalidate: 10, // In seconds

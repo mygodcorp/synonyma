@@ -123,7 +123,8 @@ async function insert(
       id: cuid(),
       word,
       done: false,
-    }))
+    })),
+    { ignoreDuplicates: false }
   );
 
   console.log(res);
