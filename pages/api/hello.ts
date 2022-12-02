@@ -118,14 +118,17 @@ async function insert(
     })
     .select();
 
-  const res = await supabase.from("words").upsert(
-    [...synonymes, ...antonymes, ...familiers].map((word) => ({
-      id: cuid(),
-      word,
-      done: false,
-    })),
-    { ignoreDuplicates: false }
-  );
+  const res = await supabase
+    .from("words")
+    .upsert(
+      [...synonymes, ...antonymes, ...familiers].map((word) => ({
+        id: cuid(),
+        word,
+        done: false,
+      })),
+      { ignoreDuplicates: false }
+    )
+    .select();
 
   console.log(res);
   return data;
