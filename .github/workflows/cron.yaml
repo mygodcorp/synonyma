@@ -9,5 +9,4 @@ jobs:
       - name: Call our API route
         run: |
           curl --request POST \
-          --url 'https://yoursite.com/api/cron' \
-          --header 'Authorization: Bearer ${{ secrets.API_SECRET_KEY }}'
+          --url 'https://synonyma.vercel.app/api/hello' \
