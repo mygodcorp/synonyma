@@ -33,6 +33,10 @@ export default async function Page({ params }: { params: { id: string } }) {
       <h1 className="font-normal">
         Synonymes de <span className="font-bold">{props.mot}</span>
       </h1>
+      <hr />
+      <h2 className="font-normal">
+        Définition de <span className="font-bold">{props.mot}</span>
+      </h2>
       <p>{props.definition}</p>
       <hr />
       <h2 className="font-normal">

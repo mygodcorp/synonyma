@@ -4,6 +4,7 @@ import { supabase } from "lib/supabase";
 import { openai } from "lib/openai";
 import { prompts } from "prompts";
 import cuid from "cuid";
+import slugify from "slugify";
 
 function match(word: string | undefined) {
   return word?.match(/\[(.*?)\]/)![1];
@@ -115,6 +116,7 @@ async function insert(
       antonymes: antonymes,
       familiers: familiers,
       definition: definition,
+      slug: slugify(word, { lower: true }),
     })
     .select();
 
