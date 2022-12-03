@@ -32,19 +32,15 @@ type WordT = {
 type Data = {};
 
 async function getWord(): Promise<WordT> {
-  const { data } = await supabase
-    .from("words")
-    .select("*")
-    .limit(1)
-    .filter("done", "eq", false)
-    .single();
+  const { data } = await supabase.from("words").select("*").limit(1).single();
+  console.log(data);
   return data;
 }
 
 async function setDone(id: string) {
   return await supabase
     .from("words")
-    .update({ done: true })
+    .update({ processed: true })
     .eq("id", id)
     .select();
 }
