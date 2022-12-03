@@ -7,7 +7,7 @@ export default async function handler(
 ) {
   const _word = await supabase
     .from("_word")
-    .select(`*, synonymes:_synonyme!synm_id(item:word_id(*))`);
+    .select(`*, synonymes:_synonyme!word_id(item:synm_id(*))`);
   res.status(200).json({ _word });
 }
 
