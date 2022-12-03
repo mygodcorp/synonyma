@@ -14,7 +14,11 @@ function format(word: string | undefined) {
   if (match(word)) {
     return match(word)!
       .split(",")
-      .map((item) => item.trim());
+      .map((item) => item.trim())
+      .filter((item) => {
+        if (item.match(/\s/)) return;
+        return item;
+      });
   }
   return [];
 }
@@ -101,39 +105,14 @@ async function getDefintion(word: string) {
   return match(definition);
 }
 
-async function insert(
-  word: string,
-  synonymes: Array<string>,
-  antonymes: Array<string>,
-  familiers: Array<string>,
-  definition: string | undefined
-) {
-  const { data, error } = await supabase
-    .from("mots")
-    .insert({
-      mot: word,
-      synonymes: synonymes,
-      antonymes: antonymes,
-      familiers: familiers,
-      definition: definition,
-      slug: slugify(word, { lower: true }),
-    })
-    .select();
-
-  const res = await supabase
-    .from("words")
+async function insert(word: string) {
+  return await supabase
+    .from("_word")
     .upsert(
-      [...synonymes, ...antonymes, ...familiers].map((word) => ({
-        id: cuid(),
-        word,
-        done: false,
-      })),
-      { onConflict: "word", ignoreDuplicates: true }
+      { word, slug: slugify(word) },
+      { onConflict: "word", ignoreDuplicates: false }
     )
     .select();
-
-  console.log(res);
-  return data;
 }
 
 export default async function handler(
@@ -141,12 +120,14 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { word, id } = await getWord();
-  const definition = await getDefintion(word);
+  const result = await insert(word);
+  await setDone(id);
+  res.status(200).json(result);
+}
+
+/** const definition = await getDefintion(word);
   const synonymes = await getSynonymes(word);
   const antonymes = await getAntonymes(word);
   const familiers = await getFamiliers(word);
   await insert(word, synonymes, antonymes, familiers, definition);
-  await setDone(id);
-
-  res.status(200).json({ word, synonymes, antonymes, familiers, definition });
-}
+  await setDone(id); */
