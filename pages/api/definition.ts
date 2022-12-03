@@ -33,12 +33,11 @@ type Data = {};
 
 async function getWord(): Promise<WordT> {
   const { data } = await supabase
-    .from("words")
+    .from("_word")
     .select("*")
-    .eq("processed", false)
+    .eq("definition_processed", false)
     .limit(1)
     .single();
-  console.log(data);
   return data;
 }
 
@@ -106,13 +105,11 @@ async function getDefintion(word: string) {
   return match(definition);
 }
 
-async function insert(word: string) {
+async function insert(id: string, definition: string | undefined) {
   return await supabase
     .from("_word")
-    .upsert(
-      { word, slug: slugify(word) },
-      { onConflict: "word", ignoreDuplicates: false }
-    )
+    .update({ definition: definition, definition_processed: true })
+    .eq("id", id)
     .select();
 }
 
@@ -121,8 +118,9 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { word, id } = await getWord();
-  const result = await insert(word);
-  await setDone(id);
+  const definition = await getDefintion(word);
+  const result = await insert(id, definition);
+
   res.status(200).json(result);
 }
 
