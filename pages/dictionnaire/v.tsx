@@ -24,7 +24,7 @@ function Dictionnaire(props: { words: IParams[] }) {
         description="mots qui commence par c"
       />
       <div className="mx-auto">
-        <div className="grid items-center h-screen p-6">
+        <div className="grid items-center p-6">
           <div className="flex justify-center flex-col">
             {props.words.map((prop) => (
               <Link key={prop.id} className="py-1" href={`/${prop.slug}`}>
