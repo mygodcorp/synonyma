@@ -41,25 +41,13 @@ function Dictionnaire(props: { words: IParams[] }) {
 
 export default Dictionnaire;
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const { data } = (await supabase
-    .from("_word")
-    .select("*")) as PostgrestSingleResponse<IParams[]>;
-  const paths = data!.map((item) => {
-    return {
-      params: { slug: item.slug },
-    };
-  });
-  return { fallback: "blocking", paths };
-};
-
 export const getStaticProps: GetStaticProps<{
   words: IParams[] | null;
-}> = async (context) => {
+}> = async () => {
   const { data: words } = await supabase
     .from("_word")
     .select("*")
-    .like("word", `${context.params?.slug}%`)
+    .like("word", `b%`)
     .order("word", { ascending: true });
   return { props: { words }, revalidate: 10000 };
 };
