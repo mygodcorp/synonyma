@@ -27,7 +27,10 @@ function Synonyme(props: { word: IParams }) {
       <div className="mx-auto">
         <div className="grid items-center p-6">
           <div className="prose flex justify-center flex-col">
-            <h1 className="capitalize">{`Synonymes de ${props.word.word}`}</h1>
+            <h1>
+              <span>Synonyme de</span>
+              <span className="capitalize">{props.word.word}</span>
+            </h1>
             <p>{props.word.definition}</p>
             {props.word.synonymes.map(({ item }) => (
               <Link key={item.id} className="py-1" href={`/${item.slug}`}>
