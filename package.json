@@ -11,6 +11,7 @@
   "dependencies": {
     "@googleapis/sheets": "^4.0.0",
     "@supabase/supabase-js": "^2.1.1",
+    "@tailwindcss/forms": "^0.5.3",
     "@types/node": "18.11.10",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
