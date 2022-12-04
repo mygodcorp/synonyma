@@ -1,9 +1,11 @@
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { supabase } from "lib/supabase";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { NextSeo } from "next-seo";
+import Link from "next/link";
 import { ParsedUrlQueryInput } from "querystring";
 
-interface IParams extends ParsedUrlQueryInput {
+interface IParams {
   created_at: string;
   word: string;
   synonyme_processed: false;
@@ -11,11 +13,42 @@ interface IParams extends ParsedUrlQueryInput {
   slug: string;
   id: string;
   definition_processed: false;
+  synonymes: Array<{ item: IParams }>;
 }
 
-function Synonyme(props: IParams[]) {
+function Synonyme(props: { word: IParams }) {
   console.log(props);
-  return null;
+  return (
+    <>
+      <NextSeo
+        title={`synonymes de ${props.word.word}`}
+        description={`Tous les synonymes de ${props.word.word}`}
+      />
+      <div className="mx-auto">
+        <div className="grid items-center p-6">
+          <div className="prose flex justify-center flex-col">
+            <h1 className="capitalize">{props.word.word}</h1>
+            <p>{props.word.definition}</p>
+            {props.word.synonymes.map(({ item }) => (
+              <Link key={item.id} className="py-1" href={`/${item.slug}`}>
+                <div className="text-xs text-zinc-400">
+                  {`${process.env.NEXT_PUBLIC_BASE_URL} / ${item.slug}`}
+                </div>
+                <h2 className="text-blue-700 text-xl capitalize font-medium">
+                  {item.word}
+                </h2>
+                <div className="text-sm">
+                  {item.definition
+                    ? item.definition
+                    : "pas encore de definition"}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default Synonyme;
@@ -33,11 +66,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps<{
-  words: IParams[] | null;
+  word: IParams | null;
 }> = async (context) => {
-  const { data: words } = await supabase
+  const { data: word } = await supabase
     .from("_word")
     .select(`*, synonymes:_synonyme!word_id(item:synm_id(*))`)
-    .eq("slug", `${context.params?.slug}`);
-  return { props: { words }, revalidate: 10000 };
+    .eq("slug", `${context.params?.slug}`)
+    .single();
+  return { props: { word }, revalidate: 10000 };
 };
