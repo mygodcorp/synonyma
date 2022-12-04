@@ -20,8 +20,8 @@ function Dictionnaire(props: { words: IParams[] }) {
   return (
     <>
       <NextSeo
-        title="Mots qui commence par a"
-        description="mots qui commence par a"
+        title="Mots qui commence par c"
+        description="mots qui commence par c"
       />
       <div className="mx-auto">
         <div className="grid items-center h-screen p-6">
@@ -56,7 +56,7 @@ export const getStaticProps: GetStaticProps<{
   const { data: words } = await supabase
     .from("_word")
     .select("*")
-    .like("word", `a%`)
+    .like("word", `l%`)
     .order("word", { ascending: true });
   return { props: { words }, revalidate: 10000 };
 };
