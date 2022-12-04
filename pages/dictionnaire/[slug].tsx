@@ -21,7 +21,7 @@ function Dictionnaire(props: { words: IParams[] }) {
       <div className="grid grid-cols-2 items-center h-screen p-6">
         <div className="flex justify-center flex-col">
           {props.words.map((prop) => (
-            <Link className="py-1" href={`/${prop.slug}`}>
+            <Link key={prop.id} className="py-1" href={`/${prop.slug}`}>
               <div className="text-xs text-zinc-400">
                 {`${process.env.NEXT_PUBLIC_BASE_URL} / ${prop.slug}`}
               </div>
