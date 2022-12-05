@@ -6,22 +6,9 @@ import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
 import { useCallback, useEffect, useState } from "react";
 
-interface IParams extends ParsedUrlQueryInput {
-  created_at: string;
-  word: string;
-  synonyme_processed: false;
-  definition: string | null;
-  slug: string;
-  id: string;
-  definition_processed: false;
-}
-
-async function textSearch(word: string): Promise<IParams[] | null> {
-  const { data } = (await supabase
-    .from("_word")
-    .select("*")
-    .like("word", `${word}%`)
-    .order("word", { ascending: true })) as PostgrestSingleResponse<IParams[]>;
+async function search(word: string): Promise<IParams[]> {
+  const res = await fetch(`/api/search?q=${word}`);
+  const data = await res.json();
   return data;
 }
 
@@ -30,15 +17,13 @@ function Recherche() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!router.query.q) return;
-    textSearch(router.query.q as string).then((data) => {
-      if (!data) return;
-      setResult(data);
-    });
-    return () => setResult();
+    search(router.query.q as string)
+      .then((data) => {
+        setResult(data);
+      })
+      .catch((error) => router.push("/"));
+    return () => setResult([]);
   }, [router.query.q]);
-
-  console.log(result);
 
   return (
     <>
