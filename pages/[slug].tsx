@@ -21,7 +21,7 @@ function Synonyme(props: { word: IParams }) {
   return (
     <>
       <NextSeo
-        title={`synonymes de ${props.word.word}`}
+        title={`Synonymes de ${props.word.word}`}
         description={`Tous les synonymes de ${props.word.word}`}
       />
       <div className="mx-auto">
