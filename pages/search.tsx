@@ -17,13 +17,14 @@ function Recherche() {
   const router = useRouter();
 
   useEffect(() => {
+    if (!router.query.q) return;
     search(router.query.q as string)
       .then((data) => {
         setResult(data);
       })
-      .catch((error) => router.push("/"));
+      .catch(() => router.push("/"));
     return () => setResult([]);
-  }, [router.query.q]);
+  }, [router]);
 
   return (
     <>
@@ -35,7 +36,7 @@ function Recherche() {
         <div className="grid items-center h-screen p-6">
           <div className="flex justify-center flex-col">
             {result.map((prop) => (
-              <Link key={prop.id} className="py-1" href={`/${prop.slug}`}>
+              <Link key={prop.slug} className="py-1" href={`/${prop.slug}`}>
                 <h2 className="text-blue-700 text-xl capitalize font-medium">
                   {prop.word}
                 </h2>

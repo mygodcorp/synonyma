@@ -21,8 +21,17 @@ function Synonyme(props: { word: IParams }) {
   return (
     <>
       <NextSeo
-        title={`Synonymes de ${props.word.word}`}
-        description={`Tous les synonymes de ${props.word.word}`}
+        title={`${props.word.word.toUpperCase()} Synonymes: Synonymes & Antonymes de ${props.word.word.toUpperCase()}`}
+        description={`Synonymes de ${props.word.word} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`}
+        defaultTitle={props.word.word.toUpperCase()}
+        canonical={`https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${props.word.slug}`}
+        openGraph={{
+          title: `${
+            props.word.word
+          } Synonymes: Synonymes & Antonymes de ${props.word.word.toUpperCase()}`,
+          type: "article",
+          description: `Synonymes de ${props.word.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
+        }}
       />
       <div className="mx-auto">
         <div className="grid items-center p-6">
