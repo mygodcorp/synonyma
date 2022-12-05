@@ -42,7 +42,7 @@ async function getWord(): Promise<WordT> {
   const { data } = await supabase
     .from("_word")
     .select("*")
-    .eq("definition_processed", false)
+    .eq("synonyme_processed", false)
     .limit(1)
     .single();
   return data;
@@ -85,7 +85,7 @@ async function insert(id: string, synonymes: Array<string>) {
         synm_id: item.id,
       })),
       {
-        onConflict: "word",
+        onConflict: "word_id, synm_id",
         ignoreDuplicates: false,
       }
     )
