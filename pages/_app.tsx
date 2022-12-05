@@ -50,7 +50,7 @@ export default function App({ Component, pageProps }: AppProps) {
         description="synonyma.fr, tous les synonymes gratuits."
         openGraph={{ site_name: config.site.name, locale: config.site.locale }}
       />
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </Fragment>
   );
 }

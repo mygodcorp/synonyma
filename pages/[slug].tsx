@@ -3,7 +3,15 @@ import { supabase } from "lib/supabase";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NextSeo } from "next-seo";
 import Link from "next/link";
-import { ParsedUrlQueryInput } from "querystring";
+
+const fetcher = async (slug: string | undefined) => {
+  const { data } = await supabase
+    .from("_word")
+    .select(`*, synonymes:_synonyme!word_id(item:synm_id(*))`)
+    .eq("slug", `${slug}`)
+    .single();
+  return data;
+};
 
 interface IParams {
   created_at: string;
@@ -33,32 +41,29 @@ function Synonyme(props: { word: IParams }) {
           description: `Synonymes de ${props.word.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
         }}
       />
-      <div className="mx-auto">
+      <main className="max-w-5xl mx-auto">
         <div className="grid items-center p-6">
-          <div className="flex justify-center flex-col">
+          <div className="prose flex justify-center flex-col">
             <h1>
               <span>Synonymes de </span>
               <span className="capitalize">{props.word.word}</span>
             </h1>
             <p>{props.word.definition}</p>
-            {props.word.synonymes.map(({ item }) => (
-              <Link key={item.id} className="py-1" href={`/${item.slug}`}>
-                <div className="text-xs text-zinc-400">
-                  {`${process.env.NEXT_PUBLIC_BASE_URL} / ${item.slug}`}
-                </div>
-                <h2 className="text-blue-700 text-xl capitalize font-medium">
-                  {item.word}
-                </h2>
-                <div className="text-sm">
-                  {item.definition
-                    ? item.definition
-                    : "pas encore de definition"}
-                </div>
-              </Link>
-            ))}
+            <ul>
+              {props.word.synonymes.map(({ item }) => (
+                <li key={item.id}>
+                  <Link
+                    className="inline-flex items-center rounded-full bg-purple-100 px-3 py-0.5 text-sm font-medium text-purple-800"
+                    href={`/${item.slug}`}
+                  >
+                    {item.word}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }
@@ -80,10 +85,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<{
   word: IParams | null;
 }> = async (context) => {
-  const { data: word } = await supabase
-    .from("_word")
-    .select(`*, synonymes:_synonyme!word_id(item:synm_id(*))`)
-    .eq("slug", `${context.params?.slug}`)
-    .single();
-  return { props: { word }, revalidate: 10000 };
+  const word = await fetcher(context.params?.slug as string);
+  return {
+    props: {
+      word,
+    },
+    revalidate: 10000,
+  };
 };
