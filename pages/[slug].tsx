@@ -26,7 +26,7 @@ function Synonyme(props: { word: IParams }) {
       />
       <div className="mx-auto">
         <div className="grid items-center p-6">
-          <div className="prose flex justify-center flex-col">
+          <div className="flex justify-center flex-col">
             <h1>
               <span>Synonymes de </span>
               <span className="capitalize">{props.word.word}</span>
