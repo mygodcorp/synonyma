@@ -12,7 +12,7 @@ export default function Footer() {
           </div>
         </div>
         <p className="mt-12 text-center text-sm text-gray-500 lg:text-right">
-          Copyright &copy; 2022. All rights reserved.
+          Copyright 2022. All rights reserved.
         </p>
       </div>
     </footer>
