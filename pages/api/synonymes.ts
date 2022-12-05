@@ -77,7 +77,7 @@ async function insert(id: string, synonymes: Array<string>) {
       }
     )
     .select();
-  await supabase
+  const { data: res, error } = await supabase
     .from("_synonyme")
     .upsert(
       data?.map((item) => ({
@@ -85,11 +85,13 @@ async function insert(id: string, synonymes: Array<string>) {
         synm_id: item.id,
       })),
       {
-        onConflict: "word_id, synm_id",
+        onConflict: "word_id,synm_id",
         ignoreDuplicates: false,
       }
     )
-    .select();
+    .select("*");
+
+  console.log(res, error);
 }
 
 export default async function handler(
