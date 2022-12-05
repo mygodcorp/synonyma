@@ -21,7 +21,6 @@ async function getData(slug: string): Promise<SynonymT> {
     .select(`*, synonymes:_synonyme!word_id(item:synm_id(*))`)
     .eq("slug", slug)
     .single();
-  console.log(data, slug);
   return data;
 }
 

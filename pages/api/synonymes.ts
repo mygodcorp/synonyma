@@ -90,8 +90,6 @@ async function insert(id: string, synonymes: Array<string>) {
       }
     )
     .select("*");
-
-  console.log(res, error);
 }
 
 export default async function handler(

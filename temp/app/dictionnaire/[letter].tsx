@@ -21,7 +21,6 @@ async function getData(letter: string): Promise<SynonymT> {
     .select(`*`)
     .eq("slug", letter)
     .single();
-  console.log(data, letter);
   return data;
 }
 

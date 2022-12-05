@@ -25,7 +25,6 @@ interface IParams {
 }
 
 function Synonyme(props: { word: IParams }) {
-  console.log(props);
   return (
     <>
       <NextSeo

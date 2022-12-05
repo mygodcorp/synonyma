@@ -7,6 +7,8 @@ import { DefaultSeo } from "next-seo";
 import * as gtag from "utils/gtag";
 import config from "website.config";
 import { useRouter } from "next/router";
+import Footer from "components/footer";
+import Header from "components/header";
 
 declare global {
   interface Window {
@@ -29,6 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router.events]);
   return (
     <Fragment>
+      <Header />
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
         strategy="lazyOnload"
@@ -51,6 +54,7 @@ export default function App({ Component, pageProps }: AppProps) {
         openGraph={{ site_name: config.site.name, locale: config.site.locale }}
       />
       <Component {...pageProps} />
+      <Footer />
     </Fragment>
   );
 }

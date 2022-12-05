@@ -1,4 +1,5 @@
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
+import Glossary from "components/glossary";
 import { supabase } from "lib/supabase";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NextSeo } from "next-seo";
@@ -23,16 +24,17 @@ function Dictionnaire(props: { words: IParams[] }) {
         description="mots qui commencent par a"
       />
       <div className="mx-auto">
-        <div className="grid items-center h-screen p-6">
+        <div className="items-center p-6">
           <div className="flex justify-center flex-col">
-            <h1 className="text-3xl">Mots qui commencent par a</h1>
-            {props.words.map((prop) => (
-              <Link key={prop.id} className="py-1" href={`/${prop.slug}`}>
-                <h2 className="text-blue-700 text-xl capitalize font-medium">
-                  {prop.word}
-                </h2>
-              </Link>
-            ))}
+            <ul>
+              {props.words.map((prop) => (
+                <Link key={prop.id} className="py-1" href={`/${prop.slug}`}>
+                  <h2 className="text-blue-700 text-xl capitalize font-medium">
+                    {prop.word}
+                  </h2>
+                </Link>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
@@ -42,13 +44,49 @@ function Dictionnaire(props: { words: IParams[] }) {
 
 export default Dictionnaire;
 
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+  ].map((item) => {
+    return {
+      params: { slug: item.toLocaleLowerCase() },
+    };
+  });
+  return { fallback: false, paths };
+};
+
 export const getStaticProps: GetStaticProps<{
   words: IParams[] | null;
-}> = async () => {
+}> = async (context) => {
   const { data: words } = await supabase
     .from("_word")
     .select("*")
-    .like("word", `a%`)
+    .like("word", `${context.params?.slug as string}%`)
     .order("word", { ascending: true });
   return { props: { words }, revalidate: 10000 };
 };

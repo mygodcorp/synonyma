@@ -38,7 +38,6 @@ async function getWord(): Promise<WordT> {
     .eq("processed", false)
     .limit(1)
     .single();
-  console.log(data);
   return data;
 }
 
