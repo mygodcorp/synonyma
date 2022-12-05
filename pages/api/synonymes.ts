@@ -79,11 +79,15 @@ async function insert(id: string, synonymes: Array<string>) {
     .select();
   await supabase
     .from("_synonyme")
-    .insert(
+    .upsert(
       data?.map((item) => ({
         word_id: id,
         synm_id: item.id,
-      }))
+      })),
+      {
+        onConflict: "word",
+        ignoreDuplicates: false,
+      }
     )
     .select();
 }
