@@ -5,8 +5,10 @@ import { openai } from "lib/openai";
 import { prompts } from "prompts";
 import slugify from "slugify";
 
+const regex = /\[([^\[\]]+)\]/;
+
 function match(word: string | undefined) {
-  return word?.match(/\[(.*?)\]/)![1];
+  return word?.match(regex)![1];
 }
 
 function format(word: string | undefined) {
