@@ -1,5 +1,5 @@
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
-import { supabase } from "lib/supabase";
+import { supabase } from "lib/supabase/supabase";
 import { NextApiResponse, NextApiRequest } from "next";
 
 type Data = {};

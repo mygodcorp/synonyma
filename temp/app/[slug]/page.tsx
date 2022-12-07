@@ -1,4 +1,4 @@
-import { supabase } from "lib/supabase";
+import { supabase } from "lib/supabase/supabase";
 import Head from "next/head";
 import Link from "next/link";
 import slugify from "slugify";

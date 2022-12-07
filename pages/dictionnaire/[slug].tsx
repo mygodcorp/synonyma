@@ -1,6 +1,6 @@
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
 import Glossary from "components/glossary";
-import { supabase } from "lib/supabase";
+import { supabase } from "lib/supabase/supabase";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NextSeo } from "next-seo";
 import Link from "next/link";

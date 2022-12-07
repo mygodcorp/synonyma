@@ -1,5 +1,5 @@
 export const prompts = {
-  synonymes: (word: string) =>
+  synonymes: (word: string | undefined) =>
     `Mot: manger\nSynonymes : [absorber, consommer, ingérer, ingurgiter, prendre]\n\nMot: boire\nSynonymes : [s'abreuver, absorber, avaler, consommer, se désaltérer, étancher sa soif, ingurgiter, lever son verre, porter un toast]\n\nMot: aimer\nSynonymes : [adorer, apprécier, chérir, désirer, estimer, priser, se plaire à, souhaiter, vénérer]\n\nMot :${word}\n`,
   antonymes: (word: string) =>
     `Mot: manger\nAntonymes: [cracher, rendre, vomir].\n\nMot: boire\nAntonymes: [régurgiter]\n\nMot :${word}\n`,

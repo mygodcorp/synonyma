@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "lib/supabase";
-import { openai } from "lib/openai";
-import { prompts } from "prompts";
+import { supabase } from "lib/supabase/supabase";
+import { openai } from "lib/openai/openai";
+import { prompts } from "lib/openai/prompts";
 import cuid from "cuid";
 import slugify from "slugify";
 

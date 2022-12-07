@@ -1,17 +1,18 @@
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
-import { supabase } from "lib/supabase";
+import {
+  dehydrate,
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { supabase } from "lib/supabase/supabase";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NextSeo } from "next-seo";
 import Link from "next/link";
-
-const fetcher = async (slug: string | undefined) => {
-  const { data } = await supabase
-    .from("_word")
-    .select(`*, synonymes:_synonyme!word_id(item:synm_id(*))`)
-    .eq("slug", `${slug}`)
-    .single();
-  return data;
-};
+import getPage from "lib/supabase/queries/get-page-data";
+import getSynonymes from "utils/data/get-synonymes";
+import getDefinition from "utils/data/get-definition";
 
 interface IParams {
   created_at: string;
@@ -24,44 +25,56 @@ interface IParams {
   synonymes: Array<{ item: IParams }>;
 }
 
-function Synonyme(props: { word: IParams }) {
+type PageProps = {
+  slug: string;
+};
+
+function Synonyme(props: PageProps) {
+  const queryClient = useQueryClient();
+  const { data } = useQuery<IParams>({
+    queryKey: ["word", props.slug],
+    queryFn: () => getPage(props.slug),
+  });
+
+  const synonymes = useMutation({
+    mutationFn: getSynonymes,
+    onSuccess: () => {
+      queryClient.refetchQueries(["word", props.slug]);
+    },
+  });
+
+  const defintion = useMutation({
+    mutationFn: getDefinition,
+    onSuccess: () => {
+      queryClient.refetchQueries(["word", props.slug]);
+    },
+  });
+
   return (
     <>
       <NextSeo
-        title={`${props.word.word.toUpperCase()} Synonymes: Synonymes & Antonymes de ${props.word.word.toUpperCase()}`}
-        description={`Synonymes de ${props.word.word} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`}
-        defaultTitle={props.word.word.toUpperCase()}
-        canonical={`https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${props.word.slug}`}
+        title={`${data?.word.toUpperCase()} Synonymes: Synonymes & Antonymes de ${data?.word.toUpperCase()}`}
+        description={`Synonymes de ${data?.word} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`}
+        defaultTitle={data?.word.toUpperCase()}
+        canonical={`https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${data?.slug}`}
         openGraph={{
           title: `${
-            props.word.word
-          } Synonymes: Synonymes & Antonymes de ${props.word.word.toUpperCase()}`,
+            data?.word
+          } Synonymes: Synonymes & Antonymes de ${data?.word.toUpperCase()}`,
           type: "article",
-          description: `Synonymes de ${props.word.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
+          description: `Synonymes de ${data?.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
         }}
       />
-      <main className="max-w-5xl mx-auto">
-        <div className="grid items-center p-6">
-          <div className="prose flex justify-center flex-col">
-            <h1>
-              <span>Synonymes de </span>
-              <span className="capitalize">{props.word.word}</span>
-            </h1>
-            <p>{props.word.definition}</p>
-            <ul>
-              {props.word.synonymes.map(({ item }) => (
-                <li key={item.id}>
-                  <Link
-                    className="inline-flex items-center rounded-full bg-purple-100 px-3 py-0.5 text-sm font-medium text-purple-800"
-                    href={`/${item.slug}`}
-                  >
-                    {item.word}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+      <main className="max-w-2xl mx-auto">
+        <h1 className="mb-1">
+          <span className="text-xs font-bold text-neutral-500 hidden">
+            Synonymes de
+          </span>
+          <span className="text-6xl font-bold capitalize text-neutral-800 tracking-tighter">
+            {data?.word}
+          </span>
+        </h1>
+        <p className="text-xl text-neutral-700">{data?.definition}</p>
       </main>
     </>
   );
@@ -81,13 +94,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { fallback: "blocking", paths };
 };
 
-export const getStaticProps: GetStaticProps<{
-  word: IParams | null;
-}> = async (context) => {
-  const word = await fetcher(context.params?.slug as string);
+export const getStaticProps: GetStaticProps = async (context) => {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ["word", context.params?.slug],
+    queryFn: () => getPage(context.params?.slug as string),
+  });
   return {
     props: {
-      word,
+      slug: context.params?.slug,
+      dehydratedState: dehydrate(queryClient),
     },
     revalidate: 10000,
   };

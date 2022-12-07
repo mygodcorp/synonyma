@@ -1,7 +1,7 @@
 import "styles/reset.css";
 import "styles/globals.css";
 import type { AppProps } from "next/app";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Script from "next/script";
 import { DefaultSeo } from "next-seo";
 import * as gtag from "utils/gtag";
@@ -9,6 +9,11 @@ import config from "website.config";
 import { useRouter } from "next/router";
 import Footer from "components/footer";
 import Header from "components/header";
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 declare global {
   interface Window {
@@ -17,6 +22,7 @@ declare global {
 }
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [queryClient] = useState(() => new QueryClient());
   const router = useRouter();
   useEffect(() => {
     const handleRouteChange = (url: string) => {
@@ -31,7 +37,6 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router.events]);
   return (
     <Fragment>
-      <Header />
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
         strategy="lazyOnload"
@@ -53,8 +58,11 @@ export default function App({ Component, pageProps }: AppProps) {
         description="synonyma.fr, tous les synonymes gratuits."
         openGraph={{ site_name: config.site.name, locale: config.site.locale }}
       />
-      <Component {...pageProps} />
-      <Footer />
+      <QueryClientProvider client={queryClient}>
+        <Hydrate state={pageProps.dehydratedState}>
+          <Component {...pageProps} />
+        </Hydrate>
+      </QueryClientProvider>
     </Fragment>
   );
 }
