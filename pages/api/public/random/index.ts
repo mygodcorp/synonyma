@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const word = await getRandomWord();
+    const word = await getRandomWord("definition_processed", false);
     return res.status(201).json({
       success: true,
       data: word,

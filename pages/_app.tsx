@@ -58,11 +58,13 @@ export default function App({ Component, pageProps }: AppProps) {
         description="synonyma.fr, tous les synonymes gratuits."
         openGraph={{ site_name: config.site.name, locale: config.site.locale }}
       />
+      <Header />
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
           <Component {...pageProps} />
         </Hydrate>
       </QueryClientProvider>
+      <Footer />
     </Fragment>
   );
 }

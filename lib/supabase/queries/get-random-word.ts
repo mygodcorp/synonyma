@@ -1,10 +1,10 @@
 import { supabase } from "lib/supabase/supabase";
 
-export default async function getRandomWord() {
+export default async function getRandomWord(column: string, value: any) {
   const { data, error } = await supabase
     .from("_word")
     .select("*")
-    .eq("synonyme_processed", false)
+    .eq(column, value)
     .limit(1)
     .single();
   if (error) throw new Error(error.message);

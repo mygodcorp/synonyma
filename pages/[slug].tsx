@@ -66,15 +66,52 @@ function Synonyme(props: PageProps) {
         }}
       />
       <main className="max-w-2xl mx-auto">
-        <h1 className="mb-1">
-          <span className="text-xs font-bold text-neutral-500 hidden">
-            Synonymes de
-          </span>
-          <span className="text-6xl font-bold capitalize text-neutral-800 tracking-tighter">
-            {data?.word}
-          </span>
-        </h1>
-        <p className="text-xl text-neutral-700">{data?.definition}</p>
+        <article className="mt-8 px-4">
+          <header>
+            <h1 className="mb-2">
+              <span className="text-xs font-bold text-neutral-500 hidden">
+                Synonymes de
+              </span>
+              <span className="text-3xl lg:text-6xl font-bold capitalize text-neutral-800">
+                {data?.word}
+              </span>
+            </h1>
+            <p className="text-xl text-neutral-700">{data?.definition}</p>
+          </header>
+          <section className="mt-8">
+            <h2 className="text-1xl lg:text-3xl font-bold text-neutral-800 pb-3">
+              <span>Synonymes de </span>
+              <span className="capitalize">{data?.word}</span>
+            </h2>
+            <ul className="divide-y divide-dashed">
+              {!data?.synonyme_processed && (
+                <div className="bg-neutral-200 p-8 flex justify-center items-center mt-6">
+                  <button
+                    onClick={() => synonymes.mutate(props.slug)}
+                    className="relative bg-neutral-900 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 text-sm text-white font-semibold h-12 px-6 rounded-lg flex items-center dark:bg-neutral-700 dark:hover:bg-neutral-600 pointer-events-auto"
+                  >
+                    {synonymes.isLoading
+                      ? "Chargement..."
+                      : "Voir les synonymes"}
+                  </button>
+                </div>
+              )}
+              {data?.synonymes.map((synonyme) => (
+                <li key={synonyme.item.id} className="py-6">
+                  <Link
+                    className="block capitalize font-semibold"
+                    href={synonyme.item.slug}
+                  >
+                    {synonyme.item.word}
+                  </Link>
+                  <Link className="text-neutral-500" href={synonyme.item.slug}>
+                    Synonymes de {synonyme.item.word}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </article>
       </main>
     </>
   );
