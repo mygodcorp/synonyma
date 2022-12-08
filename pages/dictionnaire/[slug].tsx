@@ -27,6 +27,9 @@ function Dictionnaire(props: { words: IParams[]; letter: string }) {
         openGraph={{
           title: `Lettre ${props.letter.toUpperCase()} : Mots et Synonymes qui commencent par la lettre ${props.letter.toUpperCase()}`,
           type: "article",
+          images: [
+            { url: `https://synonyma.fr/api/image?word=${props.letter}` },
+          ],
           description: `Synonymes des mots de la lettre ${props.letter.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
         }}
       />
