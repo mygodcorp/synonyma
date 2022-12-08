@@ -54,13 +54,6 @@ function Synonyme(props: PageProps) {
     },
   });
 
-  const defintion = useMutation({
-    mutationFn: getDefinition,
-    onSuccess: () => {
-      queryClient.refetchQueries(["word", props.word]);
-    },
-  });
-
   return (
     <>
       <NextSeo
