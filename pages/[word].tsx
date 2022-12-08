@@ -30,34 +30,34 @@ interface IParams {
 }
 
 type PageProps = {
-  slug: string;
+  word: string;
 };
 
 function Synonyme(props: PageProps) {
   const queryClient = useQueryClient();
   const { data } = useQuery<IParams>({
-    queryKey: ["word", props.slug],
-    queryFn: () => getPageClient(props.slug),
+    queryKey: ["word", props.word],
+    queryFn: () => getPageClient(props.word),
   });
 
   const synonymes = useMutation({
     mutationFn: getSynonymes,
     onSuccess: () => {
-      queryClient.refetchQueries(["word", props.slug]);
+      queryClient.refetchQueries(["word", props.word]);
     },
   });
 
   const antonymes = useMutation({
     mutationFn: getAntonymes,
     onSuccess: () => {
-      queryClient.refetchQueries(["word", props.slug]);
+      queryClient.refetchQueries(["word", props.word]);
     },
   });
 
   const defintion = useMutation({
     mutationFn: getDefinition,
     onSuccess: () => {
-      queryClient.refetchQueries(["word", props.slug]);
+      queryClient.refetchQueries(["word", props.word]);
     },
   });
 
@@ -67,7 +67,7 @@ function Synonyme(props: PageProps) {
         title={`${data?.word.toUpperCase()} Synonymes: Synonymes & Antonymes de ${data?.word.toUpperCase()}`}
         description={`Synonymes de ${data?.word} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`}
         defaultTitle={data?.word.toUpperCase()}
-        canonical={`https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${data?.slug}`}
+        canonical={`https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${data?.word}`}
         openGraph={{
           title: `${
             data?.word
@@ -98,7 +98,7 @@ function Synonyme(props: PageProps) {
               {!data?.synonyme_processed && (
                 <div className="bg-neutral-200 p-8 flex justify-center items-center mt-6">
                   <button
-                    onClick={() => synonymes.mutate(props.slug)}
+                    onClick={() => synonymes.mutate(props.word)}
                     className="relative bg-neutral-900 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 text-sm text-white font-semibold h-12 px-6 rounded-lg flex items-center dark:bg-neutral-700 dark:hover:bg-neutral-600 pointer-events-auto"
                   >
                     {synonymes.isLoading
@@ -111,11 +111,11 @@ function Synonyme(props: PageProps) {
                 <li key={synonyme.item.id} className="py-6">
                   <Link
                     className="block capitalize font-semibold"
-                    href={synonyme.item.slug}
+                    href={synonyme.item.word}
                   >
                     {synonyme.item.word}
                   </Link>
-                  <Link className="text-neutral-500" href={synonyme.item.slug}>
+                  <Link className="text-neutral-500" href={synonyme.item.word}>
                     Synonymes de {synonyme.item.word}
                   </Link>
                 </li>
@@ -131,7 +131,7 @@ function Synonyme(props: PageProps) {
               {!data?.antonyme_processed && (
                 <div className="bg-neutral-200 p-8 flex justify-center items-center mt-6">
                   <button
-                    onClick={() => antonymes.mutate(props.slug)}
+                    onClick={() => antonymes.mutate(props.word)}
                     className="relative bg-neutral-900 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 text-sm text-white font-semibold h-12 px-6 rounded-lg flex items-center dark:bg-neutral-700 dark:hover:bg-neutral-600 pointer-events-auto"
                   >
                     {antonymes.isLoading
@@ -144,11 +144,11 @@ function Synonyme(props: PageProps) {
                 <li key={antonyme.item.id} className="py-6">
                   <Link
                     className="block capitalize font-semibold"
-                    href={antonyme.item.slug}
+                    href={antonyme.item.word}
                   >
                     {antonyme.item.word}
                   </Link>
-                  <Link className="text-neutral-500" href={antonyme.item.slug}>
+                  <Link className="text-neutral-500" href={antonyme.item.word}>
                     Antonymes de {antonyme.item.word}
                   </Link>
                 </li>
@@ -169,21 +169,22 @@ export const getStaticPaths: GetStaticPaths = async () => {
     .select("*")) as PostgrestSingleResponse<IParams[]>;
   const paths = data!.map((item) => {
     return {
-      params: { slug: item.slug },
+      params: { word: item.word },
     };
   });
   return { fallback: "blocking", paths };
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  console.log(context);
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["word", context.params?.slug],
-    queryFn: () => getPage(context.params?.slug as string),
+    queryKey: ["word", context.params?.word],
+    queryFn: () => getPage(context.params?.word as string),
   });
   return {
     props: {
-      slug: context.params?.slug,
+      word: context.params?.word,
       dehydratedState: dehydrate(queryClient),
     },
     revalidate: 10000,

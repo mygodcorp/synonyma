@@ -1,10 +1,10 @@
 import { supabase } from "lib/supabase/supabase";
 
-export default async function getWord(slug: string) {
+export default async function getWord(word: string) {
   const { data, error } = await supabase
     .from("_word")
     .select("*")
-    .eq("slug", slug)
+    .eq("word", word)
     .single();
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Not found");

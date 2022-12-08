@@ -20,7 +20,7 @@ function Dictionnaire(props: { words: IParams[] }) {
   return (
     <>
       <NextSeo
-        title="Mots qui commencent par a"
+        title={`mots qui commencent par `}
         description="mots qui commencent par a"
       />
       <div className="mx-auto">
@@ -28,7 +28,7 @@ function Dictionnaire(props: { words: IParams[] }) {
           <div className="flex justify-center flex-col">
             <ul>
               {props.words.map((prop) => (
-                <Link key={prop.id} className="py-1" href={`/${prop.slug}`}>
+                <Link key={prop.id} className="py-1" href={`/${prop.word}`}>
                   <h2 className="text-blue-700 text-xl capitalize font-medium">
                     {prop.word}
                   </h2>
