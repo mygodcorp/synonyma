@@ -16,12 +16,19 @@ interface IParams extends ParsedUrlQueryInput {
   definition_processed: false;
 }
 
-function Dictionnaire(props: { words: IParams[] }) {
+function Dictionnaire(props: { words: IParams[]; letter: string }) {
   return (
     <>
       <NextSeo
-        title={`mots qui commencent par `}
-        description="mots qui commencent par a"
+        title={`Lettre ${props.letter.toUpperCase()} : Mots et Synonymes qui commencent par la lettre ${props.letter.toUpperCase()}`}
+        description={`Synonymes des mots de la lettre ${props.letter.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`}
+        defaultTitle={`Mots et synonymes qui commencent par la lettre ${props.letter.toUpperCase()}`}
+        canonical={`https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/dictionnaire/${props.letter}`}
+        openGraph={{
+          title: `Lettre ${props.letter.toUpperCase()} : Mots et Synonymes qui commencent par la lettre ${props.letter.toUpperCase()}`,
+          type: "article",
+          description: `Synonymes des mots de la lettre ${props.letter.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
+        }}
       />
       <div className="mx-auto">
         <div className="items-center p-6">
@@ -88,5 +95,5 @@ export const getStaticProps: GetStaticProps<{
     .select("*")
     .like("word", `${context.params?.slug as string}%`)
     .order("word", { ascending: true });
-  return { props: { words }, revalidate: 10000 };
+  return { props: { words, letter: context.params?.slug }, revalidate: 10000 };
 };
