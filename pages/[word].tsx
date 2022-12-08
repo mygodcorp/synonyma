@@ -176,17 +176,25 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  console.log(context);
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["word", context.params?.word],
-    queryFn: () => getPage(context.params?.word as string),
-  });
-  return {
-    props: {
-      word: context.params?.word,
-      dehydratedState: dehydrate(queryClient),
-    },
-    revalidate: 10000,
-  };
+  try {
+    await queryClient.fetchQuery({
+      queryKey: ["word", context.params?.word],
+      queryFn: () => getPage(context.params?.word as string),
+    });
+    return {
+      props: {
+        word: context.params?.word,
+        dehydratedState: dehydrate(queryClient),
+      },
+      revalidate: 10000,
+    };
+  } catch (e) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: "/",
+      },
+    };
+  }
 };
