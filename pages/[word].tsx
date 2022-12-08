@@ -73,7 +73,11 @@ function Synonyme(props: PageProps) {
             data?.word
           } Synonymes: Synonymes & Antonymes de ${data?.word.toUpperCase()}`,
           type: "article",
-          images: [{ url: `https://synonyma.fr/api/image?word=${props.word}` }],
+          images: [
+            {
+              url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${props.word}`,
+            },
+          ],
           description: `Synonymes de ${data?.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
         }}
       />
