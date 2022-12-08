@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { supabase } from "lib/supabase/supabase";
 
 const upsertSynonymes = async (id: string, synonymes: Array<IParams>) => {

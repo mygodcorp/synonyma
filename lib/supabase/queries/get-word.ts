@@ -6,7 +6,6 @@ export default async function getWord(slug: string) {
     .select("*")
     .eq("slug", slug)
     .single();
-  console.log(slug);
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Not found");
   return data;
