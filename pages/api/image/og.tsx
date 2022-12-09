@@ -17,7 +17,7 @@ export default async function handler(req: NextRequest) {
           display: "flex",
           fontSize: 60,
           color: "black",
-          fontWeight: "900",
+          fontWeight: "800",
           letterSpacing: "-3px",
           background: "#f6f6f6",
           width: "100%",
