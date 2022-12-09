@@ -17,36 +17,26 @@ function Home() {
     ref.current?.focus();
   }, [ref]);
 
-  const onChange = (event: React.FormEvent<HTMLInputElement>): void => {
+  const onChange = async (
+    event: React.FormEvent<HTMLInputElement>
+  ): Promise<void> => {
     setValue(event.currentTarget.value.toLocaleLowerCase());
-    if (suggestions?.length) {
-      setSuggestionsActive(true);
-    } else {
-      setSuggestionsActive(false);
-    }
+    const { data } = await getSearch(
+      event.currentTarget.value.toLocaleLowerCase()
+    );
+    setSuggestionsActive(true);
+    setSuggestions(data);
   };
 
-  useEffect(() => {
-    const fetch = async () => {
-      if (!value) return;
-      const { data } = await getSearch(value);
-      setSuggestions(data);
-    };
-    fetch().catch(console.error);
-  }, [value]);
-
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = (
+    event: React.MouseEvent<HTMLLIElement>,
+    word: string
+  ) => {
     event.preventDefault();
+    router.push(word);
+    setValue(event.currentTarget.innerText);
     setSuggestions([]);
     setSuggestionsActive(false);
-    setValue("");
-  };
-
-  const handleBlur = (event: React.FormEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    setSuggestions([]);
-    setSuggestionsActive(false);
-    setValue("");
   };
 
   const Suggestions = () => {
@@ -56,15 +46,20 @@ function Home() {
         className="absolute border-neutral-400 w-full mt-2 space-y-1 "
       >
         {suggestions?.map((item) => (
-          <Box key={item.id} as="li" className=" bg-neutral-50 p-2 rounded-lg">
-            <Link href={`/${item.slug}`}>{item.word}</Link>
+          <Box
+            onClick={(e: React.MouseEvent<HTMLLIElement>) =>
+              handleClick(e, item.word)
+            }
+            key={item.id}
+            as="li"
+            className=" bg-neutral-50 p-2 rounded-lg cursor-pointer"
+          >
+            {item.word}
           </Box>
         ))}
       </Box>
     );
   };
-
-  console.log(JSON.stringify(suggestions));
 
   return (
     <Box as="main" className="max-w-8xl mx-auto bg-white py-4 px-4">
@@ -74,7 +69,6 @@ function Home() {
             ref={ref}
             value={value}
             onChange={onChange}
-            onBlur={handleBlur}
             name="search"
             type="text"
             autoComplete="off"
