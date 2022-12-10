@@ -11,10 +11,12 @@ const client = Supabase.createClient(supabaseUrl, supabaseAnonKey);
 function search() {
   client
     .from("_word")
-    .select("word, id")
+    .select("word, id, slug")
     .then((data) => {
-      fs.writeFile("./search.json", JSON.stringify(data.data), (res, err) =>
-        console.log(res, err)
+      fs.writeFile(
+        "./public/search.json",
+        JSON.stringify(data.data),
+        (res, err) => console.log(res, err)
       );
     });
 }

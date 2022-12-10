@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import Words from "search.json";
+import Words from "public/search.json";
 const getSearch = (search: string) => {
   const fuse = new Fuse(Words, {
     keys: ["word"],

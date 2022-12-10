@@ -13,7 +13,6 @@ export default async function handler(req: RequestNext, res: NextApiResponse) {
     if (!req.query.search) {
       throw new Error("Missing word parameter");
     }
-    console.log(req.query.search);
     const result = await getLookLike(req.query.search);
     return res.status(201).json({
       success: true,

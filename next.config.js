@@ -2,10 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  experimental: {
-    appDir: true,
-    serverComponentsExternalPackages: ["next-seo"],
-  },
+  experimental: {},
 };
 
 module.exports = nextConfig;
