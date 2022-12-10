@@ -15,6 +15,7 @@ import {
 } from "@tanstack/react-query";
 import localFont from "@next/font/local";
 import { Header } from "components/header";
+import path from "path";
 
 declare global {
   interface Window {
@@ -26,12 +27,12 @@ declare global {
 const myFont = localFont({
   src: [
     {
-      path: "./HelveticaNowDisplay-Bold.woff2",
+      path: "../fonts/HelveticaNowDisplay-Bold.woff2",
       weight: "700",
       style: "bold",
     },
     {
-      path: "./HelveticaNowDisplay-Regular.woff2",
+      path: "../fonts/HelveticaNowDisplay-Regular.woff2",
       weight: "400",
       style: "normal",
     },
