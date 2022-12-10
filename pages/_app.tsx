@@ -1,13 +1,12 @@
 import "styles/reset.css";
 import "styles/globals.css";
 import type { AppProps } from "next/app";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Script from "next/script";
 import { DefaultSeo } from "next-seo";
 import * as gtag from "utils/gtag";
 import config from "website.config";
 import { useRouter } from "next/router";
-import Footer from "components/footer";
 import {
   Hydrate,
   QueryClient,
@@ -15,7 +14,6 @@ import {
 } from "@tanstack/react-query";
 import localFont from "@next/font/local";
 import { Header } from "components/header";
-import path from "path";
 
 declare global {
   interface Window {
