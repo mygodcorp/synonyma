@@ -4,12 +4,13 @@ import { animate } from "motion";
 import getSearch from "utils/data/get-search";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Fuse from "fuse.js";
 
 function Home() {
   const router = useRouter();
   const [value, setValue] = useState<string>("");
-  const [suggestions, setSuggestions] = useState<Array<IParams>>();
-  const [suggestionIndex, setSuggestionIndex] = useState(0);
+  const [suggestions, setSuggestions] =
+    useState<Fuse.FuseResult<{ word: string; id: string }>[]>();
   const [suggestionsActive, setSuggestionsActive] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
 
@@ -21,9 +22,7 @@ function Home() {
     event: React.FormEvent<HTMLInputElement>
   ): Promise<void> => {
     setValue(event.currentTarget.value.toLocaleLowerCase());
-    const { data } = await getSearch(
-      event.currentTarget.value.toLocaleLowerCase()
-    );
+    const data = getSearch(event.currentTarget.value.toLocaleLowerCase());
     setSuggestionsActive(true);
     setSuggestions(data);
   };
@@ -45,7 +44,7 @@ function Home() {
         as="ul"
         className="absolute border-neutral-400 w-full mt-2 space-y-1 "
       >
-        {suggestions?.map((item) => (
+        {suggestions?.map(({ item }) => (
           <Box
             onClick={(e: React.MouseEvent<HTMLLIElement>) =>
               handleClick(e, item.word)

@@ -1,12 +1,12 @@
-import getErrorMessage from "lib/openai/get-error-msg";
-
-const getSearch = async (search: string) => {
-  try {
-    const res = await fetch(`/api/public/search/${search}`);
-    return await res.json();
-  } catch (e) {
-    return getErrorMessage(e);
-  }
+import Fuse from "fuse.js";
+import Words from "search.json";
+const getSearch = (search: string) => {
+  const fuse = new Fuse(Words, {
+    keys: ["word"],
+    threshold: 0.1,
+    isCaseSensitive: true,
+  });
+  return fuse.search(search, { limit: 5 });
 };
 
 export default getSearch;
