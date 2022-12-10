@@ -1,3 +1,4 @@
+type Fuse = import("fuse.js").default;
 interface IParams {
   created_at: string;
   word: string;
@@ -7,6 +8,8 @@ interface IParams {
   id: string;
   definition_processed: false;
 }
+
+type FuseResult = Fuse.FuseResult<{ word: string; id: string; slug: string }>;
 
 type PolymorphicRef<C extends React.ElementType> =
   React.ComponentPropsWithRef<C>["ref"];

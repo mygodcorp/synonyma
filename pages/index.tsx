@@ -1,6 +1,5 @@
 import { Box } from "components/box";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { animate } from "motion";
 import getSearch from "utils/data/get-search";
 import { useRouter } from "next/router";
 import Link from "next/link";
