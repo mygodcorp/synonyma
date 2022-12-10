@@ -10,7 +10,7 @@ const upsertWords = async (synonymes: Array<string>) => {
     .from("_word")
     .upsert(
       synonymes.map((item) => ({
-        word: item,
+        word: item.toLocaleLowerCase(),
         slug: slugify(item),
       })),
       options
