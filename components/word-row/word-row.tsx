@@ -15,14 +15,14 @@ export const WordRow = ({ word, ...restProps }: WordRowProps): JSX.Element => (
   <Container as="li" px="PX-SM" className={styles.root} {...restProps}>
     <Grid.Root columns={3} gap={32}>
       <Grid.Item start={2}>
-        <Link href={word}>
+        <Link href={`/${word}`}>
           <Text as="p" size="M" transform="capitalize">
             {word}
           </Text>
         </Link>
       </Grid.Item>
       <Grid.Item start={3} justify="end">
-        <Link href={word}>
+        <Link href={`/${word}`}>
           <ArrowRight />
         </Link>
       </Grid.Item>
