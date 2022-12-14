@@ -11,7 +11,7 @@ const Header = (props: HeaderProps) => {
     animate(logo, { opacity: [0, 1] }, { delay: 0.2 });
   }, []);
   return (
-    <Box as="header" className="max-w-8xl mx-auto bg-white">
+    <Box as="header" className="max-w-8xl mx-auto">
       <Box as="div" className="py-4 px-4">
         <Logo id="logo" />
       </Box>

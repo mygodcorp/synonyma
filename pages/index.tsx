@@ -60,7 +60,7 @@ function Home() {
   };
 
   return (
-    <Box as="main" className="max-w-8xl mx-auto bg-white py-4 px-4">
+    <Box as="main" className="max-w-8xl mx-auto py-4 px-4">
       <Box as="article" className="items-center h-[calc(50vh-6rem)] flex">
         <Box as="section" className="max-w-xl mx-auto flex-1 relative">
           <Box

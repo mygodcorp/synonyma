@@ -1,0 +1,15 @@
+.root {
+  background: red;
+}
+
+.MAX-W-FULL {
+  width: 100%;
+}
+
+.PY-SM {
+  padding-inline: 8px;
+}
+
+.PY-MD {
+  padding-inline: 16px;
+}

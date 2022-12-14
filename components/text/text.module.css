@@ -1,0 +1,25 @@
+.root {
+  background: red;
+}
+
+.L {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.02em;
+  color: rgba(23, 23, 23, 0.9);
+}
+
+.XXL {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 80px;
+  line-height: 96px;
+  letter-spacing: -1.9px;
+  color: rgba(23, 23, 23, 0.9);
+}
+
+.capitalize {
+  text-transform: capitalize;
+}

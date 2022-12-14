@@ -15,6 +15,12 @@ import getSynonymes from "utils/data/get-synonymes";
 import getDefinition from "utils/data/get-definition";
 import getPageClient from "utils/data/get-page-client";
 import getAntonymes from "utils/data/get-antonymes";
+import { Scramble } from "components/scramble";
+import { Box } from "components/box";
+import { MetaBar } from "components/meta-bar/meta-bar";
+import { Text } from "components/text/text";
+import { Spacer } from "components/spacer/spacer";
+import { Container } from "components/container/container.stories";
 
 interface IParams {
   created_at: string;
@@ -74,87 +80,19 @@ function Synonyme(props: PageProps) {
           description: `Synonymes de ${data?.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
         }}
       />
-      <main className="max-w-2xl mx-auto">
-        <article className="mt-8 px-4">
-          <header>
-            <h1 className="mb-2">
-              <span className="text-xs font-bold text-neutral-500 hidden">
-                Synonymes de
-              </span>
-              <span className="text-3xl lg:text-6xl font-bold capitalize text-neutral-800">
-                {data?.word}
-              </span>
-            </h1>
-            <p className="text-xl text-neutral-700">{data?.definition}</p>
-          </header>
-          <section className="mt-8">
-            <h2 className="text-1xl lg:text-3xl font-bold text-neutral-800 pb-3">
-              <span>Synonymes de </span>
-              <span className="capitalize">{data?.word}</span>
-            </h2>
-            <ul className="divide-y divide-dashed">
-              {!data?.synonyme_processed && (
-                <div className="bg-neutral-200 p-8 flex justify-center items-center mt-6">
-                  <button
-                    onClick={() => synonymes.mutate(props.word)}
-                    className="relative bg-neutral-900 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 text-sm text-white font-semibold h-12 px-6 rounded-lg flex items-center dark:bg-neutral-700 dark:hover:bg-neutral-600 pointer-events-auto"
-                  >
-                    {synonymes.isLoading
-                      ? "Chargement..."
-                      : "Voir les synonymes"}
-                  </button>
-                </div>
-              )}
-              {data?.synonymes.map((synonyme) => (
-                <li key={synonyme.item.id} className="py-6">
-                  <Link
-                    className="block capitalize font-semibold"
-                    href={synonyme.item.word}
-                  >
-                    {synonyme.item.word}
-                  </Link>
-                  <Link className="text-neutral-500" href={synonyme.item.word}>
-                    Synonymes de {synonyme.item.word}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-          <section className="mt-8">
-            <h2 className="text-1xl lg:text-3xl font-bold text-neutral-800 pb-3">
-              <span>Antonymes de </span>
-              <span className="capitalize">{data?.word}</span>
-            </h2>
-            <ul className="divide-y divide-dashed">
-              {!data?.antonyme_processed && (
-                <div className="bg-neutral-200 p-8 flex justify-center items-center mt-6">
-                  <button
-                    onClick={() => antonymes.mutate(props.word)}
-                    className="relative bg-neutral-900 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 text-sm text-white font-semibold h-12 px-6 rounded-lg flex items-center dark:bg-neutral-700 dark:hover:bg-neutral-600 pointer-events-auto"
-                  >
-                    {antonymes.isLoading
-                      ? "Chargement..."
-                      : "Voir les antonymes"}
-                  </button>
-                </div>
-              )}
-              {data?.antonymes.map((antonyme) => (
-                <li key={antonyme.item.id} className="py-6">
-                  <Link
-                    className="block capitalize font-semibold"
-                    href={antonyme.item.word}
-                  >
-                    {antonyme.item.word}
-                  </Link>
-                  <Link className="text-neutral-500" href={antonyme.item.word}>
-                    Antonymes de {antonyme.item.word}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </article>
-      </main>
+      <Container as="main">
+        <Text as="h1" size="XXL" transform="capitalize">
+          {data?.word}
+        </Text>
+        <Spacer space="MD" />
+        <Box as="article">
+          <MetaBar label="description" symbol="♥" />
+          <Spacer space="MD" />
+          <Text as="p" size="L">
+            {data?.definition}
+          </Text>
+        </Box>
+      </Container>
     </>
   );
 }

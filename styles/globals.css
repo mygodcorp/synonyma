@@ -4,4 +4,6 @@
 
 body {
   font-family: "HelveticaNowDisplay-Bold";
+  background-image: url("/noise.png");
+  background-blend-mode: difference;
 }
