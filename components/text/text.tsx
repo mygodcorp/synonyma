@@ -39,7 +39,6 @@ const Text: TextComponent = React.forwardRef(
     return (
       <Component
         ref={ref}
-        data-component="text-component"
         className={clsx(styles[size], styles[transform], className)}
         {...restProps}
       >

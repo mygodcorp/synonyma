@@ -22,7 +22,8 @@ type ContainerProps<C extends React.ElementType> =
         | "MAX-W-XL"
         | "MAX-W-XXL"
         | "MAX-W-FULL";
-      py?: "PY-SM" | "PY-MD" | "PY-LG" | "PY-XL" | "PY-XXL";
+      py?: "NONE" | "PY-SM" | "PY-MD" | "PY-LG" | "PY-XL" | "PY-XXL";
+      px?: "NONE" | "PX-SM" | "PX-MD" | "PX-LG" | "PX-XL" | "PX-XXL";
       className?: string;
     }
   >;
@@ -38,7 +39,8 @@ const Container: ContainerComponent = React.forwardRef(
       children,
       className,
       maxW = "MAX-W-FULL",
-      py = "PY-MD",
+      py = "NONE",
+      px = "NONE",
       ...restProps
     }: ContainerProps<C>,
     ref?: PolymorphicRef<C>
@@ -48,7 +50,7 @@ const Container: ContainerComponent = React.forwardRef(
       <Component
         ref={ref}
         data-component="container-component"
-        className={clsx(styles[maxW], styles[py], className)}
+        className={clsx(styles[maxW], styles[py], styles[px], className)}
         {...restProps}
       >
         {children}

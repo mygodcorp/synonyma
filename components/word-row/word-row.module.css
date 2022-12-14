@@ -1,0 +1,10 @@
+.root {
+  list-style: none;
+  transition: all 200ms ease-in-out;
+  background: transparent;
+  border-bottom: 1px dashed var(--color-primary);
+}
+
+.root:hover {
+  padding-inline-end: 8px;
+}

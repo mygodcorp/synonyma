@@ -1,7 +1,6 @@
 .root {
   display: flex;
   justify-content: space-between;
-  border-top: 1px hsla(0, 0%, 9%, 0.9) solid;
 }
 
 .label {

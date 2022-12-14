@@ -1,9 +1,11 @@
-import { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 import { Box } from "components/box";
 import styles from "./meta-bar.module.css";
+import { LineBar } from "components/line-bar/line-bar";
+import * as Grid from "components/grid";
 
 interface MetaBarProps {
-  label: string;
+  label: ReactNode;
   symbol: string;
 }
 
@@ -12,10 +14,17 @@ export const MetaBar = ({
   symbol,
   ...restProps
 }: MetaBarProps): JSX.Element => (
-  <Box as="div" className={styles.root} {...restProps}>
-    <Box as="h2" className={styles.label}>
-      {label}
-    </Box>
-    <Box className={styles.symbol}>{symbol}</Box>
-  </Box>
+  <Fragment>
+    <LineBar strong={2} />
+    <Grid.Root columns={3} gap={32}>
+      <Grid.Item start={1}>
+        <Box as="h2" className={styles.label}>
+          {label}
+        </Box>
+      </Grid.Item>
+      <Grid.Item start={3} justify="end">
+        <Box className={styles.symbol}>{symbol}</Box>
+      </Grid.Item>
+    </Grid.Root>
+  </Fragment>
 );

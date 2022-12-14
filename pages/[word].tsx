@@ -9,10 +9,8 @@ import {
 import { supabase } from "lib/supabase/supabase";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NextSeo } from "next-seo";
-import Link from "next/link";
 import getPage from "lib/supabase/queries/get-page-data";
 import getSynonymes from "utils/data/get-synonymes";
-import getDefinition from "utils/data/get-definition";
 import getPageClient from "utils/data/get-page-client";
 import getAntonymes from "utils/data/get-antonymes";
 import { Scramble } from "components/scramble";
@@ -21,6 +19,13 @@ import { MetaBar } from "components/meta-bar/meta-bar";
 import { Text } from "components/text/text";
 import { Spacer } from "components/spacer/spacer";
 import { Container } from "components/container/container.stories";
+import { List } from "components/list";
+import { Fragment } from "react";
+import * as Grid from "components/grid";
+import ArrowRight from "components/icons/arrow-right";
+import { LineBar } from "components/line-bar/line-bar";
+import Link from "next/link";
+import { WordRow } from "components/word-row/word-row";
 
 interface IParams {
   created_at: string;
@@ -80,17 +85,98 @@ function Synonyme(props: PageProps) {
           description: `Synonymes de ${data?.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
         }}
       />
-      <Container as="main">
+      <Container as="main" py="PY-MD">
+        <Spacer space="MD" />
         <Text as="h1" size="XXL" transform="capitalize">
           {data?.word}
         </Text>
         <Spacer space="MD" />
         <Box as="article">
-          <MetaBar label="description" symbol="♥" />
+          <LineBar strong={2} />
+          <Box as="header">
+            <Grid.Root columns={3} align="start">
+              <Grid.Item start={1}>
+                <Text as="h2" size="XS">
+                  {`Définition de ${data?.word}`}
+                </Text>
+              </Grid.Item>
+              <Grid.Item start={3} justify="end">
+                <Text as="span" size="XS">
+                  ●
+                </Text>
+              </Grid.Item>
+            </Grid.Root>
+          </Box>
           <Spacer space="MD" />
           <Text as="p" size="L">
             {data?.definition}
           </Text>
+        </Box>
+        <Spacer space="XL" />
+        <Box as="article">
+          <LineBar strong={2} />
+          <Box as="header">
+            <Grid.Root columns={3} align="start">
+              <Grid.Item start={1}>
+                <Text as="h2" size="XS">
+                  {`synonymes de ${data?.word}`}
+                </Text>
+              </Grid.Item>
+              <Grid.Item start={2}>
+                <Text as="p" size="XS">
+                  {data?.word} ({data?.synonymes.length})
+                </Text>
+              </Grid.Item>
+              <Grid.Item start={3} justify="end">
+                <Text as="span" size="XS">
+                  ●
+                </Text>
+              </Grid.Item>
+            </Grid.Root>
+          </Box>
+          <Spacer space="MD" />
+          <List
+            items={data!.synonymes}
+            renderItem={(word, idx) => (
+              <Fragment key={idx}>
+                <WordRow word={word.item.word} />
+              </Fragment>
+            )}
+          />
+        </Box>
+        <Spacer space="XL" />
+        <Box as="article">
+          <LineBar strong={2} />
+          <Box as="header">
+            <Grid.Root columns={3} align="start">
+              <Grid.Item start={1}>
+                <Text as="h2" size="XS">
+                  {`antonymes de ${data?.word}`}
+                </Text>
+              </Grid.Item>
+              <Grid.Item start={2}>
+                <Text as="p" size="XS">
+                  {data?.word} ({data?.antonymes.length})
+                </Text>
+              </Grid.Item>
+              <Grid.Item start={3} justify="end">
+                <Text as="span" size="XS">
+                  ●
+                </Text>
+              </Grid.Item>
+            </Grid.Root>
+          </Box>
+          <Spacer space="MD" />
+          <List
+            items={data!.antonymes}
+            renderItem={(word, idx) => (
+              <Fragment>
+                <Fragment key={idx}>
+                  <WordRow word={word.item.word} />
+                </Fragment>
+              </Fragment>
+            )}
+          />
         </Box>
       </Container>
     </>

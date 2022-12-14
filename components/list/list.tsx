@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 interface ListProps<T> {
   items: T[];
-  renderItem: (item: T) => ReactNode;
+  renderItem: (item: T, index: number) => ReactNode;
 }
 
 function List<T extends unknown>({ items, renderItem }: ListProps<T>) {

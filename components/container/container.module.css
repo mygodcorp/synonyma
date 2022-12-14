@@ -6,10 +6,26 @@
   width: 100%;
 }
 
+.NONE {
+  padding-inline: 0;
+}
+
 .PY-SM {
   padding-inline: 8px;
 }
 
 .PY-MD {
   padding-inline: 16px;
+}
+
+.NONE {
+  padding-block: 0;
+}
+
+.PX-SM {
+  padding-block: 8px;
+}
+
+.PX-MD {
+  padding-block: 16px;
 }

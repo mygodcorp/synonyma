@@ -27,12 +27,7 @@ const Box: BoxComponent = React.forwardRef(
   ) => {
     const Component = as || "span";
     return (
-      <Component
-        ref={ref}
-        data-component="box-component"
-        className={className}
-        {...restProps}
-      >
+      <Component ref={ref} className={className} {...restProps}>
         {children}
       </Component>
     );

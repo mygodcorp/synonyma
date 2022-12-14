@@ -1,8 +1,7 @@
 import { Box } from "components/box";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import getSearch from "utils/data/get-search";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import Fuse from "fuse.js";
 
 function Home() {
@@ -72,7 +71,7 @@ function Home() {
             autoComplete="off"
             as="input"
             placeholder="Que recherchez-vous comme synonymes ?"
-            className="w-full font-normal focus:bg-neutral-200 focus:pl-4 py-3 transition-all focus:rounded-lg flex-1 text-neutral-800 placeholder:text-neutral-600 border-b outline-none border-neutral-200"
+            className="w-full bg-transparent font-normal focus:bg-neutral-200 focus:pl-4 py-3 transition-all focus:rounded-lg flex-1 text-neutral-800 placeholder:text-neutral-600 border-b outline-none border-neutral-200"
           />
           {suggestionsActive && suggestions?.length ? <Suggestions /> : null}
         </Box>

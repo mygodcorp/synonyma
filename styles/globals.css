@@ -2,8 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes animatedBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
 body {
-  font-family: "HelveticaNowDisplay-Bold";
   background-image: url("/noise.png");
   background-blend-mode: difference;
+  animation: animatedBackground 200ms steps(2) infinite;
+}
+
+:root {
+  --color-primary: hsl(0, 0%, 9%, 90%);
 }
