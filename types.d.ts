@@ -9,6 +9,13 @@ interface IParams {
   definition_processed: false;
 }
 
+interface PaginatedResponse {
+  data: IParams[];
+  page: number;
+  size: number;
+  total: number;
+}
+
 type FuseResult = Fuse.FuseResult<{ word: string; id: string; slug: string }>;
 
 type PolymorphicRef<C extends React.ElementType> =

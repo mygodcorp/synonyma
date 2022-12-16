@@ -46,6 +46,7 @@ type PageProps = {
 
 function Synonyme(props: PageProps) {
   const queryClient = useQueryClient();
+
   const { data } = useQuery<IParams>({
     queryKey: ["word", props.word],
     queryFn: () => getPageClient(props.word),

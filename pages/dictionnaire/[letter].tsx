@@ -1,15 +1,25 @@
+import {
+  dehydrate,
+  QueryClient,
+  useInfiniteQuery,
+  useQuery,
+} from "@tanstack/react-query";
 import { Container } from "components/container/container.stories";
 import * as Grid from "components/grid";
 import { LineBar } from "components/line-bar/line-bar";
 import { List } from "components/list";
 import { Spacer } from "components/spacer/spacer";
 import { Text } from "components/text/text";
+import getPage from "lib/supabase/queries/get-page-data";
 import { WordRow } from "components/word-row/word-row";
 import { supabase } from "lib/supabase/supabase";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NextSeo } from "next-seo";
 import { ParsedUrlQueryInput } from "querystring";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+import getDictionary from "lib/supabase/queries/get-dictionary";
+import getDictionaryClient from "utils/data/get-dictionary-client";
 
 interface IParams extends ParsedUrlQueryInput {
   created_at: string;
@@ -21,9 +31,37 @@ interface IParams extends ParsedUrlQueryInput {
   definition_processed: false;
 }
 
-function Dictionnaire(props: { words: IParams[]; letter: string }) {
+type PageProps = {
+  letter: string;
+};
+
+function Dictionnaire(props: PageProps) {
+  const { ref, inView } = useInView();
+
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    isError,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["words", props.letter],
+    queryFn: (params) => getDictionaryClient(props.letter, params.pageParam),
+    getNextPageParam: (lastPage) => {
+      return lastPage?.total < lastPage?.page ? undefined : lastPage?.page;
+    },
+  });
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
+  if (!data?.pages) return null;
   return (
-    <>
+    <Fragment>
       <NextSeo
         title={`Lettre ${props.letter.toUpperCase()} : Mots et Synonymes qui commencent par la lettre ${props.letter.toUpperCase()}`}
         description={`Synonymes des mots de la lettre ${props.letter.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`}
@@ -55,7 +93,7 @@ function Dictionnaire(props: { words: IParams[]; letter: string }) {
           </Grid.Item>
           <Grid.Item start={2}>
             <Text as="p" size="XS">
-              {`(${props.words.length})`}
+              {`(${data.pages.length})`}
             </Text>
           </Grid.Item>
           <Grid.Item start={3} justify="end">
@@ -66,15 +104,29 @@ function Dictionnaire(props: { words: IParams[]; letter: string }) {
         </Grid.Root>
         <Spacer space="MD" />
         <List
-          items={props.words}
-          renderItem={(word, idx) => (
-            <Fragment key={idx}>
-              <WordRow word={word.word} />
-            </Fragment>
+          items={data?.pages}
+          renderItem={(data, idx) => (
+            <List
+              key={idx}
+              items={data!.data}
+              renderItem={(word, idx) => (
+                <Fragment key={idx}>
+                  <WordRow word={word?.word} />
+                </Fragment>
+              )}
+            ></List>
           )}
         />
+
+        <button ref={ref} disabled={!hasNextPage}>
+          {isFetchingNextPage
+            ? "Loading more..."
+            : hasNextPage
+            ? "Load Newer"
+            : "Nothing more to load"}
+        </button>
       </Container>
-    </>
+    </Fragment>
   );
 }
 
@@ -110,20 +162,35 @@ export const getStaticPaths: GetStaticPaths = async () => {
     "Z",
   ].map((item) => {
     return {
-      params: { slug: item.toLocaleLowerCase() },
+      params: { letter: item.toLocaleLowerCase() },
     };
   });
   return { fallback: false, paths };
 };
 
-export const getStaticProps: GetStaticProps<{
-  words: IParams[] | null;
-}> = async (context) => {
-  const { data: words } = await supabase
-    .from("_word")
-    .select("*")
-    .limit(10)
-    .like("word", `${context.params?.slug as string}%`)
-    .order("word", { ascending: true });
-  return { props: { words, letter: context.params?.slug }, revalidate: 10000 };
+export const getStaticProps: GetStaticProps = async (context) => {
+  const queryClient = new QueryClient();
+  try {
+    await queryClient.prefetchInfiniteQuery({
+      queryKey: ["words", context.params?.letter],
+      queryFn: () => getDictionary(context.params?.letter as string, 0),
+      getNextPageParam: (lastPage) => {
+        return lastPage.page;
+      },
+    });
+    return {
+      props: {
+        letter: context.params?.letter,
+        dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))),
+      },
+      revalidate: 10000,
+    };
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 };
