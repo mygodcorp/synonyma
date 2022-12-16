@@ -13,8 +13,8 @@ const getDictionary = async (
 ): Promise<PaginatedResponse> => {
   page = page || 0;
   if (!letter) throw new Error("Missing parameters");
-  const { from, to } = getPagination(page, 10);
-  const { data, error, count } = await supabase
+  const { from, to } = getPagination(page, 20);
+  const { data, error } = await supabase
     .from("_word")
     .select("*", { count: "estimated" })
     .like("word", `${letter}%`)
@@ -22,7 +22,7 @@ const getDictionary = async (
     .order("word", { ascending: true });
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Not found");
-  return { data: data, page: page + 1, size: 10, total: data.length };
+  return { data: data, page: page + 1, size: 20, total: data.length };
 };
 
 export default getDictionary;

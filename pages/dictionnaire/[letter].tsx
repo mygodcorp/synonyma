@@ -17,6 +17,7 @@ import { useInView } from "react-intersection-observer";
 import getDictionary from "lib/supabase/queries/get-dictionary";
 import getDictionaryClient from "utils/data/get-dictionary-client";
 import { Box } from "components/box";
+import { WordLoader } from "components/word-loader/word-loader";
 
 type PageProps = {
   letter: string;
@@ -31,7 +32,6 @@ function Dictionnaire(props: PageProps) {
       queryKey: ["words", props.letter],
       queryFn: (params) => getDictionaryClient(props.letter, params.pageParam),
       getNextPageParam: (lastPage) => {
-        console.log(lastPage.total, lastPage.page, lastPage.size);
         return lastPage?.total < lastPage?.size ? undefined : lastPage?.page;
       },
     });
@@ -104,9 +104,9 @@ function Dictionnaire(props: PageProps) {
         <Box ref={ref} />
 
         {isFetchingNextPage ? (
-          <span>Loading...</span>
+          Array.from(Array(20)).map((item) => <WordLoader key={item} />)
         ) : hasNextPage ? (
-          <span>Loading...</span>
+          Array.from(Array(20)).map((item) => <WordLoader key={item} />)
         ) : (
           <span>End</span>
         )}

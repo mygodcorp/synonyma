@@ -20,12 +20,14 @@ import { Text } from "components/text/text";
 import { Spacer } from "components/spacer/spacer";
 import { Container } from "components/container/container.stories";
 import { List } from "components/list";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import * as Grid from "components/grid";
 import ArrowRight from "components/icons/arrow-right";
 import { LineBar } from "components/line-bar/line-bar";
 import Link from "next/link";
 import { WordRow } from "components/word-row/word-row";
+import { WordLoader } from "components/word-loader/word-loader";
+import { Button } from "components/button/button";
 
 interface IParams {
   created_at: string;
@@ -52,19 +54,30 @@ function Synonyme(props: PageProps) {
     queryFn: () => getPageClient(props.word),
   });
 
-  const synonymes = useMutation({
-    mutationFn: getSynonymes,
-    onSuccess: () => {
-      queryClient.refetchQueries(["word", props.word]);
-    },
-  });
+  const { isLoading: isLoadingSynonymes, mutate: mutateSynonymes } =
+    useMutation({
+      mutationFn: getSynonymes,
+      onSuccess: () => {
+        queryClient.refetchQueries(["word", props.word]);
+      },
+    });
 
-  const antonymes = useMutation({
-    mutationFn: getAntonymes,
-    onSuccess: () => {
-      queryClient.refetchQueries(["word", props.word]);
-    },
-  });
+  const { isLoading: isLoadingAntonymes, mutate: mutateAntonymes } =
+    useMutation({
+      mutationFn: getAntonymes,
+      onSuccess: () => {
+        queryClient.refetchQueries(["word", props.word]);
+      },
+    });
+
+  useEffect(() => {
+    if (!data?.antonyme_processed) {
+      mutateAntonymes(props.word);
+    }
+    if (!data?.synonyme_processed) {
+      mutateSynonymes(props.word);
+    }
+  }, [props.word]);
 
   return (
     <>
@@ -136,14 +149,18 @@ function Synonyme(props: PageProps) {
             </Grid.Root>
           </Box>
           <Spacer space="MD" />
-          <List
-            items={data!.synonymes}
-            renderItem={(word, idx) => (
-              <Fragment key={idx}>
-                <WordRow word={word.item.word} />
-              </Fragment>
-            )}
-          />
+          {isLoadingSynonymes ? (
+            Array.from(Array(5)).map((_, idx) => <WordLoader key={idx} />)
+          ) : (
+            <List
+              items={data!.synonymes}
+              renderItem={(word, idx) => (
+                <Fragment key={idx}>
+                  <WordRow word={word.item.word} />
+                </Fragment>
+              )}
+            />
+          )}
         </Box>
         <Spacer space="XL" />
         <Box as="article">
@@ -168,16 +185,18 @@ function Synonyme(props: PageProps) {
             </Grid.Root>
           </Box>
           <Spacer space="MD" />
-          <List
-            items={data!.antonymes}
-            renderItem={(word, idx) => (
-              <Fragment>
+          {isLoadingAntonymes ? (
+            Array.from(Array(3)).map((_, idx) => <WordLoader key={idx} />)
+          ) : (
+            <List
+              items={data!.antonymes}
+              renderItem={(word, idx) => (
                 <Fragment key={idx}>
                   <WordRow word={word.item.word} />
                 </Fragment>
-              </Fragment>
-            )}
-          />
+              )}
+            />
+          )}
         </Box>
       </Container>
     </>
