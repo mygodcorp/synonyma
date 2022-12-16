@@ -1,5 +1,5 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { Button } from "./Button";
+import { Button } from "./button";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -9,5 +9,5 @@ export default {
 } as ComponentMeta<typeof Button>;
 
 export const Default: ComponentStory<typeof Button> = (props) => (
-  <Button>Hello</Button>
+  <Button onClick={() => null}>Hello</Button>
 );

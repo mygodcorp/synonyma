@@ -13,21 +13,16 @@ import getPage from "lib/supabase/queries/get-page-data";
 import getSynonymes from "utils/data/get-synonymes";
 import getPageClient from "utils/data/get-page-client";
 import getAntonymes from "utils/data/get-antonymes";
-import { Scramble } from "components/scramble";
 import { Box } from "components/box";
-import { MetaBar } from "components/meta-bar/meta-bar";
 import { Text } from "components/text/text";
 import { Spacer } from "components/spacer/spacer";
 import { Container } from "components/container/container.stories";
 import { List } from "components/list";
 import { Fragment, useEffect } from "react";
 import * as Grid from "components/grid";
-import ArrowRight from "components/icons/arrow-right";
 import { LineBar } from "components/line-bar/line-bar";
-import Link from "next/link";
 import { WordRow } from "components/word-row/word-row";
 import { WordLoader } from "components/word-loader/word-loader";
-import { Button } from "components/button/button";
 
 interface IParams {
   created_at: string;
