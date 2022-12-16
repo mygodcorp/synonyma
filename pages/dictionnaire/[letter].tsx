@@ -25,22 +25,16 @@ type PageProps = {
 function Dictionnaire(props: PageProps) {
   const { ref, inView } = useInView();
 
-  const {
-    data,
-
-    fetchNextPage,
-
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
-    refetchOnWindowFocus: false,
-    queryKey: ["words", props.letter],
-    queryFn: (params) => getDictionaryClient(props.letter, params.pageParam),
-    getNextPageParam: (lastPage) => {
-      console.log(lastPage.total, lastPage.page, lastPage.size);
-      return lastPage?.total < lastPage?.size ? undefined : lastPage?.page;
-    },
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      refetchOnWindowFocus: false,
+      queryKey: ["words", props.letter],
+      queryFn: (params) => getDictionaryClient(props.letter, params.pageParam),
+      getNextPageParam: (lastPage) => {
+        console.log(lastPage.total, lastPage.page, lastPage.size);
+        return lastPage?.total < lastPage?.size ? undefined : lastPage?.page;
+      },
+    });
 
   useEffect(() => {
     if (inView) {
