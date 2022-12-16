@@ -50,7 +50,13 @@ const Container: ContainerComponent = React.forwardRef(
       <Component
         ref={ref}
         data-component="container-component"
-        className={clsx(styles[maxW], styles[py], styles[px], className)}
+        className={clsx(
+          styles.root,
+          styles[maxW],
+          styles[py],
+          styles[px],
+          className
+        )}
         {...restProps}
       >
         {children}

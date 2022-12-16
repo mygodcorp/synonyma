@@ -14,14 +14,18 @@ const getDictionary = async (
   page = page || 0;
   if (!letter) throw new Error("Missing parameters");
   const { from, to } = getPagination(page, 10);
-  const { data, error } = await supabase
+
+  console.log(from, to);
+  const { data, error, count } = await supabase
     .from("_word")
-    .select("*", { count: "exact" })
-    .like("word", `${letter.toLocaleLowerCase()}%`)
+    .select("*", { count: "estimated" })
+    .like("word", `${letter}%`)
     .range(from, to)
     .order("word", { ascending: true });
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Not found");
+  console.log(count);
+  console.log({ from: from, to: to, page: page, total: data.length * page });
   return { data: data, page: page + 1, size: 10, total: data.length };
 };
 

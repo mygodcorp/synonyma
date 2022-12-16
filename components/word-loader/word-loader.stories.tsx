@@ -1,5 +1,5 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { WordLoader } from "./WordLoader";
+import { WordLoader } from "./word-loader";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -9,5 +9,5 @@ export default {
 } as ComponentMeta<typeof WordLoader>;
 
 export const Default: ComponentStory<typeof WordLoader> = (props) => (
-  <WordLoader>Hello</WordLoader>
+  <WordLoader {...props}>Hello</WordLoader>
 );

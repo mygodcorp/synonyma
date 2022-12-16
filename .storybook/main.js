@@ -12,13 +12,6 @@ module.exports = {
     {
       name: "@storybook/addon-postcss",
       options: {
-        cssLoaderOptions: {
-          // When you have splitted your css over multiple files
-          // and use @import('./other-styles.css')
-          importLoaders: 1,
-          modules: true,
-          sourceMap: true,
-        },
         postcssLoaderOptions: {
           // When using postCSS 8
 
@@ -26,6 +19,7 @@ module.exports = {
         },
       },
     },
+    "storybook-css-modules",
   ],
   webpackFinal: async (config) => {
     config.resolve.plugins = [

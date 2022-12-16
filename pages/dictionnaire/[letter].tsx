@@ -20,6 +20,8 @@ import { Fragment, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import getDictionary from "lib/supabase/queries/get-dictionary";
 import getDictionaryClient from "utils/data/get-dictionary-client";
+import { WordLoader } from "components/word-loader/word-loader";
+import { Box } from "components/box";
 
 interface IParams extends ParsedUrlQueryInput {
   created_at: string;
@@ -118,13 +120,15 @@ function Dictionnaire(props: PageProps) {
           )}
         />
 
-        <button ref={ref} disabled={!hasNextPage}>
-          {isFetchingNextPage
-            ? "Loading more..."
-            : hasNextPage
-            ? "Load Newer"
-            : "Nothing more to load"}
-        </button>
+        <Box ref={ref} />
+
+        {isFetchingNextPage ? (
+          <span>Loading...</span>
+        ) : hasNextPage ? (
+          <span>Loading...</span>
+        ) : (
+          <span>End</span>
+        )}
       </Container>
     </Fragment>
   );
