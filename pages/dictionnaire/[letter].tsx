@@ -2,7 +2,6 @@ import {
   dehydrate,
   QueryClient,
   useInfiniteQuery,
-  useQuery,
 } from "@tanstack/react-query";
 import { Container } from "components/container/container.stories";
 import * as Grid from "components/grid";
@@ -10,28 +9,14 @@ import { LineBar } from "components/line-bar/line-bar";
 import { List } from "components/list";
 import { Spacer } from "components/spacer/spacer";
 import { Text } from "components/text/text";
-import getPage from "lib/supabase/queries/get-page-data";
 import { WordRow } from "components/word-row/word-row";
-import { supabase } from "lib/supabase/supabase";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NextSeo } from "next-seo";
-import { ParsedUrlQueryInput } from "querystring";
 import { Fragment, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import getDictionary from "lib/supabase/queries/get-dictionary";
 import getDictionaryClient from "utils/data/get-dictionary-client";
-import { WordLoader } from "components/word-loader/word-loader";
 import { Box } from "components/box";
-
-interface IParams extends ParsedUrlQueryInput {
-  created_at: string;
-  word: string;
-  synonyme_processed: false;
-  definition: string | null;
-  slug: string;
-  id: string;
-  definition_processed: false;
-}
 
 type PageProps = {
   letter: string;
@@ -42,16 +27,18 @@ function Dictionnaire(props: PageProps) {
 
   const {
     data,
-    isLoading,
+
     fetchNextPage,
-    isError,
+
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
+    refetchOnWindowFocus: false,
     queryKey: ["words", props.letter],
     queryFn: (params) => getDictionaryClient(props.letter, params.pageParam),
     getNextPageParam: (lastPage) => {
-      return lastPage?.total < lastPage?.page ? undefined : lastPage?.page;
+      console.log(lastPage.total, lastPage.page, lastPage.size);
+      return lastPage?.total < lastPage?.size ? undefined : lastPage?.page;
     },
   });
 
