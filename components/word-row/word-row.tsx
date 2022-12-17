@@ -9,6 +9,7 @@ import ArrowRight from "components/icons/arrow-right";
 interface WordRowProps {
   children?: ReactNode;
   word: string;
+  id?: string;
 }
 
 export const WordRow = ({ word, ...restProps }: WordRowProps): JSX.Element => (

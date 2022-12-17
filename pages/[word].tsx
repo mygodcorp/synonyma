@@ -18,11 +18,13 @@ import { Text } from "components/text/text";
 import { Spacer } from "components/spacer/spacer";
 import { Container } from "components/container/container.stories";
 import { List } from "components/list";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import * as Grid from "components/grid";
 import { LineBar } from "components/line-bar/line-bar";
 import { WordRow } from "components/word-row/word-row";
 import { WordLoader } from "components/word-loader/word-loader";
+import getDefinition from "utils/data/get-definition";
+import { Skeleton } from "components/skeleton/skeleton";
 
 interface IParams {
   created_at: string;
@@ -43,6 +45,7 @@ type PageProps = {
 
 function Synonyme(props: PageProps) {
   const queryClient = useQueryClient();
+  const ref = useRef();
 
   const { data } = useQuery<IParams>({
     queryKey: ["word", props.word],
@@ -65,12 +68,23 @@ function Synonyme(props: PageProps) {
       },
     });
 
+  const { isLoading: isLoadingDefinition, mutate: mutateDefinition } =
+    useMutation({
+      mutationFn: getDefinition,
+      onSuccess: () => {
+        queryClient.refetchQueries(["word", props.word]);
+      },
+    });
+
   useEffect(() => {
     if (!data?.antonyme_processed) {
       mutateAntonymes(props.word);
     }
     if (!data?.synonyme_processed) {
       mutateSynonymes(props.word);
+    }
+    if (!data?.definition_processed) {
+      mutateDefinition(props.word);
     }
   }, [props.word]);
 
@@ -117,9 +131,13 @@ function Synonyme(props: PageProps) {
             </Grid.Root>
           </Box>
           <Spacer space="MD" />
-          <Text as="p" size="L">
-            {data?.definition}
-          </Text>
+          {isLoadingDefinition ? (
+            <Skeleton w={200} />
+          ) : (
+            <Text as="p" size="L">
+              {data?.definition}
+            </Text>
+          )}
         </Box>
         <Spacer space="XL" />
         <Box as="article">
