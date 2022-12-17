@@ -40,7 +40,7 @@ function Dictionnaire(props: PageProps) {
     if (inView) {
       fetchNextPage();
     }
-  }, [inView]);
+  }, [inView, fetchNextPage]);
 
   if (!data?.pages) return null;
   return (

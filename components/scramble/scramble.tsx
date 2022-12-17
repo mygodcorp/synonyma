@@ -64,5 +64,3 @@ export const Scramble = forwardRef(
     return <Box ref={ref}>{text}</Box>;
   }
 );
-
-Scramble.displayName = "Scramble";

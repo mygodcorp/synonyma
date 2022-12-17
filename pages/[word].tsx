@@ -86,7 +86,7 @@ function Synonyme(props: PageProps) {
     if (!data?.definition_processed) {
       mutateDefinition(props.word);
     }
-  }, [props.word]);
+  });
 
   return (
     <>
