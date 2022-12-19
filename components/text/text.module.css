@@ -12,6 +12,14 @@
   color: var(--color-primary);
 }
 
+.S {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--color-primary);
+}
+
 .L {
   font-style: normal;
   font-weight: 400;

@@ -18,7 +18,7 @@ import { Text } from "components/text/text";
 import { Spacer } from "components/spacer/spacer";
 import { Container } from "components/container/container.stories";
 import { List } from "components/list";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect } from "react";
 import * as Grid from "components/grid";
 import { LineBar } from "components/line-bar/line-bar";
 import { WordRow } from "components/word-row/word-row";
@@ -45,7 +45,6 @@ type PageProps = {
 
 function Synonyme(props: PageProps) {
   const queryClient = useQueryClient();
-  const ref = useRef();
 
   const { data } = useQuery<IParams>({
     queryKey: ["word", props.word],

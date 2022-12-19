@@ -3,6 +3,10 @@ import { useState, useRef, useEffect } from "react";
 import getSearch from "utils/data/get-search";
 import { useRouter } from "next/router";
 import Fuse from "fuse.js";
+import { MetaBar } from "components/meta-bar/meta-bar";
+import { Spacer } from "components/spacer/spacer";
+import { Text } from "components/text/text";
+import styles from "styles/home.module.css";
 
 function Home() {
   const router = useRouter();
@@ -74,6 +78,28 @@ function Home() {
             className="w-full bg-transparent font-normal focus:bg-neutral-200 focus:pl-4 py-3 transition-all focus:rounded-lg flex-1 text-neutral-800 placeholder:text-neutral-600 border-b outline-none border-neutral-200"
           />
           {suggestionsActive && suggestions?.length ? <Suggestions /> : null}
+        </Box>
+      </Box>
+      <Box>
+        <MetaBar label="Synonyma.fr" symbol="?" />
+        <Spacer space="MD" />
+        <Box as="div" className={styles.root}>
+          <Text
+            as="h2"
+            size="L"
+            transform="capitalize"
+            className={styles.title}
+          >
+            Synonyma®
+          </Text>
+          <Text as="p" size="S" className={styles.description}>
+            Nous avons rassemblé une liste de synonymes pour des centaines de
+            mots courants et spécialisés, afin de vous aider à trouver le mot
+            juste pour chaque occasion. Notre base de données est mise à jour
+            régulièrement. N'hésitez pas à nous faire part de vos commentaires
+            ou suggestions pour améliorer notre site. Bonne utilisation de
+            Synonyma.fr !
+          </Text>
         </Box>
       </Box>
     </Box>

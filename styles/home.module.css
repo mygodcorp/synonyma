@@ -1,0 +1,13 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.description {
+  flex-basis: 600px;
+}
+
+.title {
+  flex: 1;
+}

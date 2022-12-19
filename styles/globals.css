@@ -15,6 +15,13 @@ body {
   background-image: url("/noise.png");
   background-blend-mode: difference;
   animation: animatedBackground 200ms steps(2) infinite;
+  min-height: 100vh;
+  margin: 0;
+  position: relative;
+}
+
+main {
+  flex: 1;
 }
 
 :root {

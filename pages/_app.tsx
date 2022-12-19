@@ -14,6 +14,7 @@ import {
 } from "@tanstack/react-query";
 import localFont from "@next/font/local";
 import { Header } from "components/header";
+import { Footer } from "components/footer/footer";
 
 declare global {
   interface Window {
@@ -80,6 +81,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </Hydrate>
       </QueryClientProvider>
+      <Footer />
     </div>
   );
 }
