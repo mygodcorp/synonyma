@@ -16,7 +16,7 @@ import getAntonymes from "utils/data/get-antonymes";
 import { Box } from "components/box";
 import { Text } from "components/text/text";
 import { Spacer } from "components/spacer/spacer";
-import { Container } from "components/container/container.stories";
+import { Container } from "components/container/container";
 import { List } from "components/list";
 import { Fragment, useEffect } from "react";
 import * as Grid from "components/grid";
@@ -107,7 +107,7 @@ function Synonyme(props: PageProps) {
           description: `Synonymes de ${data?.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
         }}
       />
-      <Container as="main" py="PY-MD">
+      <Container as="main" py="PY-MD" px="PX-MD">
         <Spacer space="MD" />
         <Text as="h1" size="XXL" transform="capitalize">
           {data?.word}

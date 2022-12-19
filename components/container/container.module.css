@@ -6,26 +6,38 @@
   width: 100%;
 }
 
-.NONE {
-  padding-inline: 0;
-}
-
-.PY-SM {
+.PX-SM {
   padding-inline: 8px;
 }
 
-.PY-MD {
+.PX-MD {
   padding-inline: 16px;
+}
+
+.PX-LG {
+  padding-inline: 32px;
+}
+
+.PX-XL {
+  padding-inline: 40px;
+}
+
+.PY-SM {
+  padding-block: 8px;
+}
+
+.PY-MD {
+  padding-block: 16px;
+}
+
+.PY-LG {
+  padding-block: 32px;
+}
+
+.PY-XL {
+  padding-block: 40px;
 }
 
 .NONE {
   padding-block: 0;
-}
-
-.PX-SM {
-  padding-block: 8px;
-}
-
-.PX-MD {
-  padding-block: 16px;
 }

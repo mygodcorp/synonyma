@@ -1,5 +1,5 @@
 import { Box } from "components/box";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Fragment } from "react";
 import getSearch from "utils/data/get-search";
 import { useRouter } from "next/router";
 import Fuse from "fuse.js";
@@ -7,8 +7,26 @@ import { MetaBar } from "components/meta-bar/meta-bar";
 import { Spacer } from "components/spacer/spacer";
 import { Text } from "components/text/text";
 import styles from "styles/home.module.css";
+import { Container } from "components/container/container";
+import { LineBar } from "components/line-bar/line-bar";
+import * as Grid from "components/grid";
+import { WordRow } from "components/word-row/word-row";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
+import getWord from "lib/supabase/queries/get-word";
+import { GetStaticProps } from "next";
+import getMostSearchedWord from "lib/supabase/queries/get-most-searched";
+import { List } from "components/list";
 
-function Home() {
+type PageProps = {
+  limit: number;
+};
+
+function Home(props: PageProps) {
+  const { data } = useQuery<IParams[]>({
+    queryKey: ["homepage"],
+    queryFn: () => getMostSearchedWord(props.limit),
+  });
+
   const router = useRouter();
   const [value, setValue] = useState<string>("");
   const [suggestions, setSuggestions] =
@@ -80,16 +98,46 @@ function Home() {
           {suggestionsActive && suggestions?.length ? <Suggestions /> : null}
         </Box>
       </Box>
-      <Box>
-        <MetaBar label="Synonyma.fr" symbol="?" />
+
+      <Box as="article">
+        <LineBar strong={2} />
+        <Box as="header">
+          <Grid.Root columns={3} align="start">
+            <Grid.Item start={1}>
+              <Text as="h2" size="XS">
+                Synonymes les plus recherchés
+              </Text>
+            </Grid.Item>
+            <Grid.Item start={2}>
+              <Text as="p" size="XS">
+                ●
+              </Text>
+            </Grid.Item>
+            <Grid.Item start={3} justify="end">
+              <Text as="span" size="XS">
+                ●
+              </Text>
+            </Grid.Item>
+          </Grid.Root>
+        </Box>
+        <Spacer space="MD" />
+        {data && (
+          <List
+            items={data}
+            renderItem={(item, idx) => (
+              <Fragment key={idx}>
+                <WordRow word={item.word} />
+              </Fragment>
+            )}
+          />
+        )}
+      </Box>
+      <Spacer space="XL" />
+      <Container py="PY-XXL">
+        <MetaBar label="Synonyma.fr" symbol=" ●" />
         <Spacer space="MD" />
         <Box as="div" className={styles.root}>
-          <Text
-            as="h2"
-            size="L"
-            transform="capitalize"
-            className={styles.title}
-          >
+          <Text as="p" size="L" transform="capitalize" className={styles.title}>
             Synonyma®
           </Text>
           <Text as="p" size="S" className={styles.description}>
@@ -101,11 +149,34 @@ function Home() {
             Synonyma.fr !
           </Text>
         </Box>
-      </Box>
+      </Container>
+      <Spacer space="XL" />
     </Box>
   );
 }
 
 export default Home;
 
-//*
+export const getStaticProps: GetStaticProps = async (context) => {
+  const queryClient = new QueryClient();
+  try {
+    await queryClient.fetchQuery({
+      queryKey: ["homepage"],
+      queryFn: () => getMostSearchedWord(10),
+    });
+    return {
+      props: {
+        limit: 10,
+        dehydratedState: dehydrate(queryClient),
+      },
+      revalidate: 10000,
+    };
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+};

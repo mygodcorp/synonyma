@@ -1,18 +1,60 @@
-import { ReactNode } from "react";
-import { Box } from "components/box";
+import clsx from "clsx";
+import React from "react";
 import styles from "./container.module.css";
 
-interface ContainerProps {
-  maxW: "SM" | "MD" | "LG" | "XL" | "XXL";
-  padding?: "SM" | "MD" | "LG" | "XL" | "XXL";
-  children?: ReactNode;
-}
+/* -------------------------------------------------------------------------------------------------
+ * Container
+ * -----------------------------------------------------------------------------------------------*/
 
-export const Container = ({
-  children,
-  ...restProps
-}: ContainerProps): JSX.Element => (
-  <Box as="div" className={styles.root} {...restProps}>
-    {children}
-  </Box>
+type ContainerComponent = <C extends React.ElementType>(
+  props: ContainerProps<C>
+) => JSX.Element | null;
+
+type ContainerProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<
+    C,
+    {
+      children?: React.ReactNode;
+      maxW?:
+        | "MAX-W-SM"
+        | "MAX-W-MD"
+        | "MAX-W-LG"
+        | "MAX-W-XL"
+        | "MAX-W-XXL"
+        | "MAX-W-FULL";
+      py?: "NONE" | "PY-SM" | "PY-MD" | "PY-LG" | "PY-XL" | "PY-XXL";
+      px?: "NONE" | "PX-SM" | "PX-MD" | "PX-LG" | "PX-XL" | "PX-XXL";
+      className?: string;
+    }
+  >;
+
+/* -------------------------------------------------------------------------------------------------
+ * Container
+ * -----------------------------------------------------------------------------------------------*/
+
+const Container: ContainerComponent = React.forwardRef(
+  <C extends React.ElementType>(
+    { as, children, className, maxW, py, px, ...restProps }: ContainerProps<C>,
+    ref?: PolymorphicRef<C>
+  ) => {
+    const Component = as || "div";
+    return (
+      <Component
+        ref={ref}
+        className={clsx(
+          styles.root,
+          maxW && styles[maxW],
+          py && styles[py],
+          px && styles[px],
+          className
+        )}
+        {...restProps}
+      >
+        {children}
+      </Component>
+    );
+  }
 );
+
+export { Container };
+export type { ContainerProps };

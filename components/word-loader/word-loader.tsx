@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import styles from "./word-loader.module.css";
-import { Container } from "components/container/container.stories";
+import { Container } from "components/container/container";
 import * as Grid from "components/grid";
 import ContentLoader from "react-content-loader";
 import { Skeleton } from "components/skeleton/skeleton";
@@ -10,7 +10,7 @@ interface WordRowProps {
 }
 
 export const WordLoader = ({ ...restProps }: WordRowProps): JSX.Element => (
-  <Container as="li" px="PX-SM" className={styles.root} {...restProps}>
+  <Container as="li" py="PY-MD" className={styles.root} {...restProps}>
     <Grid.Root columns={3} gap={32}>
       <Grid.Item start={2} justify="stretch">
         <Skeleton w={100} h={20} />

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import styles from "./word-row.module.css";
-import { Container } from "components/container/container.stories";
+import { Container } from "components/container/container";
 import * as Grid from "components/grid";
 import Link from "next/link";
 import { Text } from "components/text/text";
@@ -13,7 +13,7 @@ interface WordRowProps {
 }
 
 export const WordRow = ({ word, ...restProps }: WordRowProps): JSX.Element => (
-  <Container as="li" px="PX-SM" className={styles.root} {...restProps}>
+  <Container as="li" py="PY-MD" className={styles.root} {...restProps}>
     <Grid.Root columns={3} gap={32}>
       <Grid.Item start={2}>
         <Link href={`/${word}`}>

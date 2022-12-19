@@ -3,7 +3,7 @@ import {
   QueryClient,
   useInfiniteQuery,
 } from "@tanstack/react-query";
-import { Container } from "components/container/container.stories";
+import { Container } from "components/container/container";
 import * as Grid from "components/grid";
 import { LineBar } from "components/line-bar/line-bar";
 import { List } from "components/list";
@@ -61,7 +61,7 @@ function Dictionnaire(props: PageProps) {
           description: `Synonymes des mots de la lettre ${props.letter.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
         }}
       />
-      <Container as="main" py="PY-MD">
+      <Container as="main" py="PY-MD" px="PX-MD">
         <Spacer space="MD" />
         <Text as="h1" size="XXL" transform="capitalize">
           {props.letter.toUpperCase()}
