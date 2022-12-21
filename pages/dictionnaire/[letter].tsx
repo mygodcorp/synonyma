@@ -97,7 +97,7 @@ function Dictionnaire(props: PageProps) {
                   <WordRow word={word?.word} />
                 </Fragment>
               )}
-            ></List>
+            />
           )}
         />
 

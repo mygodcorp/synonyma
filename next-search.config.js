@@ -1,4 +1,3 @@
-const Fuse = require("fuse.js");
 const Supabase = require("@supabase/supabase-js");
 const envLoader = require("@next/env");
 const path = require("path");

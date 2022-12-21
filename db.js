@@ -9,7 +9,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const client = Supabase.createClient(supabaseUrl, supabaseAnonKey);
 
 function search() {
-  client.from("_word").select("*").inser();
+  client.from("_word").insert();
 }
 
 search();

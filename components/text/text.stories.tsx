@@ -1,18 +1,22 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { Text } from "./text";
+import { Text, TextProps } from "./text";
+import type { Meta, StoryObj } from "@storybook/react";
 
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-export default {
-  title: "Example/Text",
+const meta: Meta<TextProps<"p">> = {
+  /* 👇 The title prop is optional.
+   * See https://storybook.js.org/docs/7.0/react/configure/overview#configure-story-loading
+   * to learn how to generate automatic titles
+   */
+  title: "Text",
+  tags: ["docsPage"],
   component: Text,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-} as ComponentMeta<typeof Text>;
+};
 
-export const Default: ComponentStory<typeof Text> = (props) => (
-  <Text {...props}>Hello</Text>
-);
+export default meta;
+type Story = StoryObj<TextProps<"p">>;
 
-Default.args = {
-  as: "h2",
-  size: "XXL",
+export const Primary: Story = {
+  args: {
+    size: "base",
+    children: "Hello",
+  },
 };

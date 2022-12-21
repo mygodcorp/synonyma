@@ -1,6 +1,7 @@
 import React from "react";
-import styles from "./text.module.css";
 import clsx from "clsx";
+import { cva, VariantProps } from "class-variance-authority";
+
 /* -------------------------------------------------------------------------------------------------
  * Text
  * -----------------------------------------------------------------------------------------------*/
@@ -14,9 +15,7 @@ type TextProps<C extends React.ElementType> = PolymorphicComponentPropWithRef<
   {
     children?: React.ReactNode;
     className?: string;
-    size: "XXL" | "XL" | "L" | "M" | "S" | "XS";
-    transform?: "capitalize" | "uppercase" | "lowercase" | "none";
-  }
+  } & VariantProps<typeof Styles>
 >;
 
 /* -------------------------------------------------------------------------------------------------
@@ -29,8 +28,9 @@ const Text: TextComponent = React.forwardRef(
       as,
       children,
       size,
+      weight,
       className,
-      transform = "none",
+      transform,
       ...restProps
     }: TextProps<C>,
     ref?: PolymorphicRef<C>
@@ -39,7 +39,7 @@ const Text: TextComponent = React.forwardRef(
     return (
       <Component
         ref={ref}
-        className={clsx(styles[size], styles[transform], className)}
+        className={clsx(Styles({ size, weight, transform }), className)}
         {...restProps}
       >
         {children}
@@ -47,6 +47,31 @@ const Text: TextComponent = React.forwardRef(
     );
   }
 );
+
+/* -------------------------------------------------------------------------------------------------
+ * Styles
+ * -----------------------------------------------------------------------------------------------*/
+
+const Styles = cva(["whitespace-pre-wrap"], {
+  variants: {
+    size: {
+      xs: ["text-xs"],
+      small: ["text-sm"],
+      base: ["text-base"],
+      medium: ["text-base", "md:text-xl", "lg:text-2xl"],
+      large: ["text-2xl", "md:text-3xl", "lg:text-4xl"],
+      xlarge: ["text-5xl", "md:text-6xl", "lg:text-7xl"],
+    },
+    weight: {
+      regular: "font-normal",
+      bold: "font-bold",
+    },
+    transform: {
+      capitalize: "capitalize",
+      uppercase: "uppercase",
+    },
+  },
+});
 
 export { Text };
 export type { TextProps };

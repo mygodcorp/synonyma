@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Box } from "components/box";
 import styles from "./button.module.css";
 
-interface ButtonProps {
+export interface ButtonProps {
   children?: ReactNode;
   onClick: () => void;
 }
@@ -16,3 +16,5 @@ export const Button = ({
     {children}
   </Box>
 );
+
+Button.displayName = "Button";

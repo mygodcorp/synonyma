@@ -109,7 +109,7 @@ function Synonyme(props: PageProps) {
       />
       <Container as="main" py="PY-MD" px="PX-MD">
         <Spacer space="MD" />
-        <Text as="h1" size="XXL" transform="capitalize">
+        <Text as="h1" size="large" weight="bold" transform="capitalize">
           {data?.word}
         </Text>
         <Spacer space="MD" />
@@ -118,12 +118,17 @@ function Synonyme(props: PageProps) {
           <Box as="header">
             <Grid.Root columns={3} align="start">
               <Grid.Item start={1}>
-                <Text as="h2" size="XS">
+                <Text as="h2" size="small" transform="uppercase" weight="bold">
                   {`Définition de ${data?.word}`}
                 </Text>
               </Grid.Item>
               <Grid.Item start={3} justify="end">
-                <Text as="span" size="XS">
+                <Text
+                  as="span"
+                  size="small"
+                  transform="uppercase"
+                  weight="bold"
+                >
                   ●
                 </Text>
               </Grid.Item>
@@ -133,7 +138,7 @@ function Synonyme(props: PageProps) {
           {isLoadingDefinition ? (
             <Skeleton w={200} />
           ) : (
-            <Text as="p" size="L">
+            <Text as="p" size="base">
               {data?.definition}
             </Text>
           )}
@@ -144,17 +149,17 @@ function Synonyme(props: PageProps) {
           <Box as="header">
             <Grid.Root columns={3} align="start">
               <Grid.Item start={1}>
-                <Text as="h2" size="XS">
+                <Text as="h2" size="xs" transform="uppercase" weight="bold">
                   {`synonymes de ${data?.word}`}
                 </Text>
               </Grid.Item>
               <Grid.Item start={2}>
-                <Text as="p" size="XS">
+                <Text as="p" size="xs" transform="uppercase" weight="bold">
                   {data?.word} ({data?.synonymes.length})
                 </Text>
               </Grid.Item>
               <Grid.Item start={3} justify="end">
-                <Text as="span" size="XS">
+                <Text as="span" size="xs" transform="uppercase" weight="bold">
                   ●
                 </Text>
               </Grid.Item>
@@ -180,17 +185,17 @@ function Synonyme(props: PageProps) {
           <Box as="header">
             <Grid.Root columns={3} align="start">
               <Grid.Item start={1}>
-                <Text as="h2" size="XS">
+                <Text as="h2" size="xs" transform="uppercase" weight="bold">
                   {`antonymes de ${data?.word}`}
                 </Text>
               </Grid.Item>
               <Grid.Item start={2}>
-                <Text as="p" size="XS">
+                <Text as="p" size="xs" transform="uppercase" weight="bold">
                   {data?.word} ({data?.antonymes.length})
                 </Text>
               </Grid.Item>
               <Grid.Item start={3} justify="end">
-                <Text as="span" size="XS">
+                <Text as="span" size="xs" transform="uppercase" weight="bold">
                   ●
                 </Text>
               </Grid.Item>
