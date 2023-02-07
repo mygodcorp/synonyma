@@ -17,7 +17,7 @@ const Footer = (props: FooterProps) => {
     <Box as="footer" className={styles.root}>
       <Box as="div" className="py-4 px-4">
         <Logo id="logo" />
-        <Text as="span" size="XS">
+        <Text as="span" size="xs">
           <Link href="/cgu">CGU</Link>
         </Text>
       </Box>
