@@ -104,17 +104,17 @@ function Home(props: PageProps) {
         <Box as="header">
           <Grid.Root columns={3} align="start">
             <Grid.Item start={1}>
-              <Text as="h2" size="XS">
+              <Text as="h2" size="xs">
                 Synonymes les plus recherchés
               </Text>
             </Grid.Item>
             <Grid.Item start={2}>
-              <Text as="p" size="XS">
+              <Text as="p" size="xs">
                 ●
               </Text>
             </Grid.Item>
             <Grid.Item start={3} justify="end">
-              <Text as="span" size="XS">
+              <Text as="span" size="xs">
                 ●
               </Text>
             </Grid.Item>
@@ -137,10 +137,15 @@ function Home(props: PageProps) {
         <MetaBar label="Synonyma.fr" symbol=" ●" />
         <Spacer space="MD" />
         <Box as="div" className={styles.root}>
-          <Text as="p" size="L" transform="capitalize" className={styles.title}>
+          <Text
+            as="p"
+            size="large"
+            transform="capitalize"
+            className={styles.title}
+          >
             Synonyma®
           </Text>
-          <Text as="p" size="S" className={styles.description}>
+          <Text as="p" size="small" className={styles.description}>
             Nous avons rassemblé une liste de synonymes pour des centaines de
             mots courants et spécialisés, afin de vous aider à trouver le mot
             juste pour chaque occasion. Notre base de données est mise à jour

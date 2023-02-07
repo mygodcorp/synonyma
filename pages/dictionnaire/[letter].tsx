@@ -63,24 +63,24 @@ function Dictionnaire(props: PageProps) {
       />
       <Container as="main" py="PY-MD" px="PX-MD">
         <Spacer space="MD" />
-        <Text as="h1" size="XXL" transform="capitalize">
+        <Text as="h1" size="xlarge" transform="capitalize">
           {props.letter.toUpperCase()}
         </Text>
         <Spacer space="MD" />
         <LineBar strong={2} />
         <Grid.Root columns={3} align="start">
           <Grid.Item start={1}>
-            <Text as="h2" size="XS">
+            <Text as="h2" size="xs">
               {`mots en ${props.letter.toUpperCase()}`}
             </Text>
           </Grid.Item>
           <Grid.Item start={2}>
-            <Text as="p" size="XS">
+            <Text as="p" size="xs">
               {`(${data.pages.length})`}
             </Text>
           </Grid.Item>
           <Grid.Item start={3} justify="end">
-            <Text as="span" size="XS">
+            <Text as="span" size="xs">
               ●
             </Text>
           </Grid.Item>

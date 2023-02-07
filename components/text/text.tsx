@@ -58,9 +58,9 @@ const Styles = cva(["whitespace-pre-wrap"], {
       xs: ["text-xs"],
       small: ["text-sm"],
       base: ["text-base"],
-      medium: ["text-base", "md:text-xl", "lg:text-2xl"],
-      large: ["text-2xl", "md:text-3xl", "lg:text-4xl"],
-      xlarge: ["text-5xl", "md:text-6xl", "lg:text-7xl"],
+      medium: ["text-lg", "md:text-xl", "lg:text-2xl"],
+      large: ["text-3xl", "md:text-4xl", "lg:text-5xl"],
+      xlarge: ["text-6xl", "md:text-7xl", "lg:text-8xl"],
     },
     weight: {
       regular: "font-normal",
