@@ -1,10 +1,13 @@
 import { supabase } from "lib/supabase/supabase";
 
 export default async function getWord(word: string) {
+  // Normalize Unicode to NFC to match database encoding
+  const normalizedWord = word.normalize('NFC');
+
   const { data, error } = await supabase
     .from("_word")
     .select("*")
-    .eq("word", word)
+    .eq("word", normalizedWord)
     .limit(1);
 
   if (error) throw new Error(error.message);

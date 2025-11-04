@@ -52,7 +52,7 @@ export default function HomeClient(props: PageProps) {
     word: string
   ) => {
     event.preventDefault();
-    router.push(`/${word}`);
+    router.push(`/${encodeURIComponent(word)}`);
     setValue(event.currentTarget.innerText);
     setSuggestions([]);
     setSuggestionsActive(false);
