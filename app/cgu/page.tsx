@@ -5,14 +5,20 @@ import { Box } from "components/box";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: `Conditions générales d'utilisation du site synonyma.fr`,
-  description: `Conditions générales d'utilisation du site synonyma.fr`,
+  title: `CGU - Conditions générales d'utilisation | Synonyma.fr`,
+  description: `Consultez les conditions générales d'utilisation du dictionnaire Synonyma.fr. Informations sur l'utilisation du site, la propriété intellectuelle et les responsabilités.`,
   alternates: {
     canonical: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/cgu`,
   },
   openGraph: {
-    title: `Conditions générales d'utilisation du site synonyma.fr`,
-    description: `Conditions générales d'utilisation du site synonyma.fr`,
+    title: `CGU - Conditions générales d'utilisation | Synonyma.fr`,
+    type: "website",
+    url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/cgu`,
+    description: `Consultez les conditions générales d'utilisation du dictionnaire Synonyma.fr.`,
+  },
+  robots: {
+    index: true,
+    follow: false,
   },
 };
 

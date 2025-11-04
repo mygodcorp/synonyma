@@ -4,6 +4,10 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import WordClient from "./word-client";
 import { HydrationBoundary } from "@tanstack/react-query";
+import {
+  DefinedTermJsonLd,
+  BreadcrumbJsonLd,
+} from "components/structured-data";
 
 // Permet la génération à la demande pour les pages non pré-générées
 export const dynamicParams = true;
@@ -46,21 +50,45 @@ export async function generateMetadata({
       };
     }
 
+    const synonymeCount = page.synonymes?.length || 0;
+    const antonymeCount = page.antonymes?.length || 0;
+
     return {
       title: `${page.word.toUpperCase()} Synonymes: Synonymes & Antonymes de ${page.word.toUpperCase()}`,
-      description: `Synonymes de ${page.word} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
+      description: `Découvrez ${synonymeCount} synonymes et ${antonymeCount} antonymes du mot "${page.word}". ${page.definition || `Trouvez le mot parfait pour enrichir votre vocabulaire.`}`,
+      keywords: [
+        `synonyme ${page.word}`,
+        `antonyme ${page.word}`,
+        page.word,
+        "dictionnaire français",
+        "vocabulaire",
+      ],
       alternates: {
         canonical: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${encodeURIComponent(page.word)}`,
       },
       openGraph: {
         title: `${page.word} Synonymes: Synonymes & Antonymes de ${page.word.toUpperCase()}`,
         type: "article",
+        url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${encodeURIComponent(page.word)}`,
+        siteName: "Synonyma",
+        locale: "fr_FR",
         images: [
           {
             url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${encodeURIComponent(page.word)}`,
+            width: 1200,
+            height: 630,
+            alt: `Synonymes de ${page.word}`,
           },
         ],
-        description: `Synonymes de ${page.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
+        description: `Découvrez ${synonymeCount} synonymes et ${antonymeCount} antonymes du mot "${page.word}". ${page.definition || `Trouvez le mot parfait pour enrichir votre vocabulaire.`}`,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${page.word.toUpperCase()} - Synonymes et Antonymes`,
+        description: `${synonymeCount} synonymes, ${antonymeCount} antonymes pour "${page.word}"`,
+        images: [
+          `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${encodeURIComponent(page.word)}`,
+        ],
       },
     };
   } catch (e) {
@@ -80,17 +108,40 @@ export default async function WordPage({
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery({
+    const pageData = await queryClient.fetchQuery({
       queryKey: ["word", decodedWord],
       queryFn: () => getPage(decodedWord),
     });
 
     const dehydratedState = dehydrate(queryClient);
 
+    // Extraire les synonymes et antonymes pour le JSON-LD
+    const synonyms =
+      pageData?.synonymes?.map((s: any) => s.item?.word || s.word) || [];
+    const antonyms =
+      pageData?.antonymes?.map((a: any) => a.item?.word || a.word) || [];
+
     return (
-      <HydrationBoundary state={dehydratedState}>
-        <WordClient word={decodedWord} />
-      </HydrationBoundary>
+      <>
+        <DefinedTermJsonLd
+          word={decodedWord}
+          definition={pageData?.definition || undefined}
+          synonyms={synonyms.slice(0, 10)} // Limiter à 10 pour ne pas surcharger
+          antonyms={antonyms.slice(0, 10)}
+        />
+        <BreadcrumbJsonLd
+          items={[
+            { name: "Accueil", url: "https://synonyma.fr" },
+            {
+              name: decodedWord,
+              url: `https://synonyma.fr/${encodeURIComponent(decodedWord)}`,
+            },
+          ]}
+        />
+        <HydrationBoundary state={dehydratedState}>
+          <WordClient word={decodedWord} />
+        </HydrationBoundary>
+      </>
     );
   } catch (e) {
     notFound();
