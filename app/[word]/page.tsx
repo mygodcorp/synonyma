@@ -35,9 +35,10 @@ export async function generateMetadata({
   params: Promise<{ word: string }>;
 }): Promise<Metadata> {
   const { word } = await params;
+  const decodedWord = decodeURIComponent(word);
 
   try {
-    const page = await getPage(word);
+    const page = await getPage(decodedWord);
 
     if (!page) {
       return {
@@ -56,7 +57,7 @@ export async function generateMetadata({
         type: "article",
         images: [
           {
-            url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${encodeURIComponent(word)}`,
+            url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${encodeURIComponent(page.word)}`,
           },
         ],
         description: `Synonymes de ${page.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
@@ -75,19 +76,20 @@ export default async function WordPage({
   params: Promise<{ word: string }>;
 }) {
   const { word } = await params;
+  const decodedWord = decodeURIComponent(word);
   const queryClient = new QueryClient();
 
   try {
     await queryClient.fetchQuery({
-      queryKey: ["word", word],
-      queryFn: () => getPage(word),
+      queryKey: ["word", decodedWord],
+      queryFn: () => getPage(decodedWord),
     });
 
     const dehydratedState = dehydrate(queryClient);
 
     return (
       <HydrationBoundary state={dehydratedState}>
-        <WordClient word={word} />
+        <WordClient word={decodedWord} />
       </HydrationBoundary>
     );
   } catch (e) {

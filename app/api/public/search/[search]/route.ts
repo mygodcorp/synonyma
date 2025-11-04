@@ -8,11 +8,12 @@ export async function GET(
 ) {
   try {
     const { search } = await params;
-    
-    if (!search) {
+    const decodedSearch = decodeURIComponent(search);
+
+    if (!decodedSearch) {
       throw new Error("Missing word parameter");
     }
-    const result = await getLookLike(search);
+    const result = await getLookLike(decodedSearch);
     return NextResponse.json(
       {
         success: true,

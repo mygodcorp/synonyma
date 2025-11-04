@@ -13,11 +13,12 @@ export async function GET(
 ) {
   try {
     const { word } = await params;
-    
-    if (!word) {
+    const decodedWord = decodeURIComponent(word);
+
+    if (!decodedWord) {
       throw new Error("Missing word parameter");
     }
-    const wordData = await getWord(word);
+    const wordData = await getWord(decodedWord);
     const response = await synonymes(wordData.word);
     const [{ text: outcome }] = response.data.choices;
     const answer = format(outcome);
