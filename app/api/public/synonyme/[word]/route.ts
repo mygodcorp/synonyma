@@ -20,7 +20,7 @@ export async function GET(
     }
     const wordData = await getWord(decodedWord);
     const response = await synonymes(wordData.word);
-    const [{ text: outcome }] = response.data.choices;
+    const outcome = response.choices[0].message.content || "";
     const answer = format(outcome);
     const { data: words } = await upsertWords(answer);
     await upsertSynonymes(wordData.id, words as IParams[]);
