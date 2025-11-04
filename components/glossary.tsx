@@ -14,7 +14,7 @@ export default function Glossary({
           <h1 className="text-3xl">{`Mots qui commencent par ${letter}`}</h1>
           <ul className="flex columns-3">
             {words.map((prop) => (
-              <Link key={prop.id} className="py-1" href={`/${encodeURIComponent(prop.slug)}`}>
+              <Link key={prop.id} className="py-1" href={`/${prop.slug}`}>
                 <h2 className="text-blue-700 text-xl capitalize font-medium">
                   {prop.word}
                 </h2>
