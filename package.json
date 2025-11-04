@@ -6,7 +6,7 @@
     "node": "22.x"
   },
   "scripts": {
-    "postbuild": "next-sitemap & node next-search.config.js",
+    "postbuild": "node next-search.config.js",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

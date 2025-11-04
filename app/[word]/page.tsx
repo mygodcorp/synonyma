@@ -5,14 +5,25 @@ import { notFound } from "next/navigation";
 import WordClient from "./word-client";
 import { HydrationBoundary } from "@tanstack/react-query";
 
-export const revalidate = 10000;
+// Permet la génération à la demande pour les pages non pré-générées
+export const dynamicParams = true;
+
+// Cache de 24h pour toutes les pages
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   const { supabase } = await import("lib/supabase/supabase");
-  const { data } = await supabase.from("_word").select("word");
-  
+
+  // Générer seulement les 1000 premiers mots pour accélérer le build
+  // Les autres seront générés à la demande lors du crawl Google
+  const { data } = await supabase
+    .from("_word")
+    .select("word")
+    .order("word", { ascending: true })
+    .limit(1000);
+
   if (!data) return [];
-  
+
   return data.map((item) => ({
     word: item.word,
   }));
