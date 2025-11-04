@@ -1,3 +1,5 @@
+"use client";
+
 import React, { forwardRef, useEffect, useReducer, useState } from "react";
 import useInterval from "@use-it/interval";
 import { Box } from "components/box";
