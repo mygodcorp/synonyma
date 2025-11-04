@@ -49,14 +49,14 @@ export async function generateMetadata({
       title: `${page.word.toUpperCase()} Synonymes: Synonymes & Antonymes de ${page.word.toUpperCase()}`,
       description: `Synonymes de ${page.word} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
       alternates: {
-        canonical: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${page.word}`,
+        canonical: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${encodeURIComponent(page.word)}`,
       },
       openGraph: {
         title: `${page.word} Synonymes: Synonymes & Antonymes de ${page.word.toUpperCase()}`,
         type: "article",
         images: [
           {
-            url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${word}`,
+            url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${encodeURIComponent(word)}`,
           },
         ],
         description: `Synonymes de ${page.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,

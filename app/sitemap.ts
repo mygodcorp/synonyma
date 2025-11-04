@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // URLs des mots
   const wordUrls: MetadataRoute.Sitemap =
     words?.map((item) => ({
-      url: `${baseUrl}/${item.word}`,
+      url: `${baseUrl}/${encodeURIComponent(item.word)}`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.8,
