@@ -1,7 +1,7 @@
 "use client";
 
 import { Box } from "components/box";
-import { useState, useRef, useEffect, Fragment } from "react";
+import { useState, useRef, useEffect, Fragment, useCallback } from "react";
 import getSearch from "utils/data/get-search";
 import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
@@ -21,85 +21,91 @@ type PageProps = {
   limit: number;
 };
 
-export default function HomeClient(props: PageProps) {
+interface SuggestionsProps {
+  suggestions: Fuse.FuseResult<{ word: string; id: string }>[];
+  onSelect: (word: string) => void;
+}
+
+const Suggestions = ({ suggestions, onSelect }: SuggestionsProps) => (
+  <Box
+    as="ul"
+    role="listbox"
+    className="absolute border-neutral-400 w-full mt-2 space-y-1"
+  >
+    {suggestions.map(({ item }) => (
+      <Box
+        onClick={() => onSelect(item.word)}
+        key={item.id}
+        as="li"
+        role="option"
+        tabIndex={0}
+        className="bg-neutral-50 p-2 rounded-lg cursor-pointer hover:bg-neutral-100 transition-colors"
+      >
+        {item.word}
+      </Box>
+    ))}
+  </Box>
+);
+
+export default function HomeClient({ limit }: PageProps) {
   const { data } = useQuery<IParams[]>({
     queryKey: ["homepage"],
-    queryFn: () => getMostSearchedWord(props.limit),
+    queryFn: () => getMostSearchedWord(limit),
   });
 
   const router = useRouter();
-  const [value, setValue] = useState<string>("");
-  const [suggestions, setSuggestions] =
-    useState<Fuse.FuseResult<{ word: string; id: string }>[]>();
+  const [value, setValue] = useState("");
+  const [suggestions, setSuggestions] = useState<
+    Fuse.FuseResult<{ word: string; id: string }>[]
+  >([]);
   const [suggestionsActive, setSuggestionsActive] = useState(false);
-  const ref = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    ref.current?.focus();
-  }, [ref]);
+    inputRef.current?.focus();
+  }, []);
 
-  const onChange = async (
-    event: React.FormEvent<HTMLInputElement>
-  ): Promise<void> => {
-    setValue(event.currentTarget.value.toLocaleLowerCase());
-    const data = getSearch(event.currentTarget.value.toLocaleLowerCase());
+  const handleChange = useCallback((event: React.FormEvent<HTMLInputElement>) => {
+    const searchValue = event.currentTarget.value.toLowerCase();
+    setValue(searchValue);
+    const results = getSearch(searchValue);
     setSuggestionsActive(true);
-    setSuggestions(data);
-  };
+    setSuggestions(results);
+  }, []);
 
-  const handleClick = (
-    event: React.MouseEvent<HTMLLIElement>,
-    word: string
-  ) => {
-    event.preventDefault();
+  const handleSelectSuggestion = useCallback((word: string) => {
     router.push(`/${word}`);
-    setValue(event.currentTarget.innerText);
+    setValue(word);
     setSuggestions([]);
     setSuggestionsActive(false);
-  };
-
-  const Suggestions = () => {
-    return (
-      <Box
-        as="ul"
-        className="absolute border-neutral-400 w-full mt-2 space-y-1 "
-      >
-        {suggestions?.map(({ item }) => (
-          <Box
-            onClick={(e: React.MouseEvent<HTMLLIElement>) =>
-              handleClick(e, item.word)
-            }
-            key={item.id}
-            as="li"
-            className=" bg-neutral-50 p-2 rounded-lg cursor-pointer"
-          >
-            {item.word}
-          </Box>
-        ))}
-      </Box>
-    );
-  };
+  }, [router]);
 
   return (
     <Box as="main" className="max-w-8xl mx-auto py-4 px-4">
-      <Box as="article" className="items-center h-[calc(50vh-6rem)] flex">
-        <Box as="section" className="max-w-xl mx-auto flex-1 relative">
+      <Box as="section" className="items-center h-[calc(50vh-6rem)] flex">
+        <Box className="max-w-xl mx-auto flex-1 relative">
           <Box
-            ref={ref}
+            ref={inputRef}
             value={value}
-            onChange={onChange}
+            onChange={handleChange}
             name="search"
             type="text"
             autoComplete="off"
             as="input"
+            role="combobox"
+            aria-expanded={suggestionsActive && suggestions.length > 0}
+            aria-autocomplete="list"
+            aria-label="Rechercher des synonymes"
             placeholder="Que recherchez-vous comme synonymes ?"
             className="w-full bg-transparent font-normal focus:bg-neutral-200 focus:pl-4 py-3 transition-all focus:rounded-lg flex-1 text-neutral-800 placeholder:text-neutral-600 border-b outline-none border-neutral-200"
           />
-          {suggestionsActive && suggestions?.length ? <Suggestions /> : null}
+          {suggestionsActive && suggestions.length > 0 && (
+            <Suggestions suggestions={suggestions} onSelect={handleSelectSuggestion} />
+          )}
         </Box>
       </Box>
 
-      <Box as="article">
+      <Box as="article" role="region" aria-label="Mots les plus recherchés">
         <LineBar strong={2} />
         <Box as="header">
           <Grid.Root columns={3} align="start">
@@ -109,12 +115,12 @@ export default function HomeClient(props: PageProps) {
               </Text>
             </Grid.Item>
             <Grid.Item start={2}>
-              <Text as="p" size="xs">
+              <Text as="p" size="xs" aria-hidden="true">
                 ●
               </Text>
             </Grid.Item>
             <Grid.Item start={3} justify="end">
-              <Text as="span" size="xs">
+              <Text as="span" size="xs" aria-hidden="true">
                 ●
               </Text>
             </Grid.Item>
@@ -132,17 +138,13 @@ export default function HomeClient(props: PageProps) {
           />
         )}
       </Box>
+
       <Spacer space="XL" />
       <Container py="PY-XXL">
         <MetaBar label="Synonyma.fr" symbol=" ●" />
         <Spacer space="MD" />
-        <Box as="div" className={styles.root}>
-          <Text
-            as="p"
-            size="large"
-            transform="capitalize"
-            className={styles.title}
-          >
+        <Box as="section" className={styles.root} aria-label="À propos de Synonyma">
+          <Text as="h2" size="large" transform="capitalize" className={styles.title}>
             Synonyma®
           </Text>
           <Text as="p" size="small" className={styles.description}>
