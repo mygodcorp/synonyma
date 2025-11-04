@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.1.1",
-    "@tanstack/react-query": "^4.19.1",
+    "@tanstack/react-query": "^5.90.6",
     "@types/react": "18.0.25",
     "@use-it/interval": "^1.0.0",
     "@vercel/analytics": "^1.5.0",
@@ -33,7 +33,7 @@
     "react-dom": "^19.0.0",
     "react-intersection-observer": "^9.4.1",
     "slugify": "^1.6.5",
-    "typescript": "4.9.3"
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^7.0.0-beta.13",

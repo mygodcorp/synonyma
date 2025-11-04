@@ -55,7 +55,8 @@ export default async function Dictionnaire({
     await queryClient.prefetchInfiniteQuery({
       queryKey: ["words", letter],
       queryFn: () => getDictionary(letter, 0),
-      getNextPageParam: (lastPage) => {
+      initialPageParam: 0,
+      getNextPageParam: (lastPage: PaginatedResponse) => {
         return lastPage.page;
       },
     });

@@ -28,6 +28,7 @@ export default function DictionaryClient(props: PageProps) {
       refetchOnWindowFocus: false,
       queryKey: ["words", props.letter],
       queryFn: (params) => getDictionaryClient(props.letter, params.pageParam),
+      initialPageParam: 0,
       getNextPageParam: (lastPage) => {
         return lastPage?.total < lastPage?.size ? undefined : lastPage?.page;
       },

@@ -1,3 +1,5 @@
+"use client";
+
 import { Box } from "components/box";
 import { Logo } from "components/logo/logo";
 import { useEffect } from "react";

@@ -46,7 +46,7 @@ export default function WordClient(props: PageProps) {
     queryFn: () => getPageClient(props.word),
   });
 
-  const { isLoading: isLoadingSynonymes, mutate: mutateSynonymes } =
+  const { isPending: isLoadingSynonymes, mutate: mutateSynonymes } =
     useMutation({
       mutationFn: getSynonymes,
       onSuccess: () => {
@@ -54,7 +54,7 @@ export default function WordClient(props: PageProps) {
       },
     });
 
-  const { isLoading: isLoadingAntonymes, mutate: mutateAntonymes } =
+  const { isPending: isLoadingAntonymes, mutate: mutateAntonymes } =
     useMutation({
       mutationFn: getAntonymes,
       onSuccess: () => {
@@ -62,7 +62,7 @@ export default function WordClient(props: PageProps) {
       },
     });
 
-  const { isLoading: isLoadingDefinition, mutate: mutateDefinition } =
+  const { isPending: isLoadingDefinition, mutate: mutateDefinition } =
     useMutation({
       mutationFn: getDefinition,
       onSuccess: () => {
