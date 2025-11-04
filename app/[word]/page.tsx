@@ -1,7 +1,7 @@
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import getPage from "lib/supabase/queries/get-page-data";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import WordClient from "./word-client";
 import { HydrationBoundary } from "@tanstack/react-query";
 import {
@@ -144,6 +144,7 @@ export default async function WordPage({
       </>
     );
   } catch (e) {
-    notFound();
+    // If word not found, redirect to generation page
+    redirect(`/generate/${encodeURIComponent(decodedWord)}`);
   }
 }
