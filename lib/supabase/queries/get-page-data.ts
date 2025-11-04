@@ -7,10 +7,13 @@ const getPage = async (word: string) => {
       `*, synonymes:_synonyme!word_id(item:synm_id(*)), antonymes:_antonyme!word_id(item:antnm_id(*))`
     )
     .eq("word", `${word}`)
-    .single();
+    .limit(1);
+
   if (error) throw new Error(error.message);
-  if (!data) throw new Error("Not found");
-  return data;
+  if (!data || data.length === 0) throw new Error("Not found");
+
+  // Return the first result if there are duplicates
+  return data[0];
 };
 
 export default getPage;

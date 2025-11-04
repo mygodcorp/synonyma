@@ -24,31 +24,38 @@ export async function generateMetadata({
   params: Promise<{ word: string }>;
 }): Promise<Metadata> {
   const { word } = await params;
-  const page = await getPage(word);
 
-  if (!page) {
+  try {
+    const page = await getPage(word);
+
+    if (!page) {
+      return {
+        title: "Page non trouvée",
+      };
+    }
+
+    return {
+      title: `${page.word.toUpperCase()} Synonymes: Synonymes & Antonymes de ${page.word.toUpperCase()}`,
+      description: `Synonymes de ${page.word} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
+      alternates: {
+        canonical: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${page.word}`,
+      },
+      openGraph: {
+        title: `${page.word} Synonymes: Synonymes & Antonymes de ${page.word.toUpperCase()}`,
+        type: "article",
+        images: [
+          {
+            url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${word}`,
+          },
+        ],
+        description: `Synonymes de ${page.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
+      },
+    };
+  } catch (e) {
     return {
       title: "Page non trouvée",
     };
   }
-
-  return {
-    title: `${page.word.toUpperCase()} Synonymes: Synonymes & Antonymes de ${page.word.toUpperCase()}`,
-    description: `Synonymes de ${page.word} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
-    alternates: {
-      canonical: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/${page.word}`,
-    },
-    openGraph: {
-      title: `${page.word} Synonymes: Synonymes & Antonymes de ${page.word.toUpperCase()}`,
-      type: "article",
-      images: [
-        {
-          url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${word}`,
-        },
-      ],
-      description: `Synonymes de ${page.word.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
-    },
-  };
 }
 
 export default async function WordPage({

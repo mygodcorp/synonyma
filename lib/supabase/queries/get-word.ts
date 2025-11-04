@@ -5,8 +5,11 @@ export default async function getWord(word: string) {
     .from("_word")
     .select("*")
     .eq("word", word)
-    .single();
+    .limit(1);
+
   if (error) throw new Error(error.message);
-  if (!data) throw new Error("Not found");
-  return data;
+  if (!data || data.length === 0) throw new Error("Not found");
+
+  // Return the first result if there are duplicates
+  return data[0];
 }
