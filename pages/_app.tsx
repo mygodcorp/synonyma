@@ -15,6 +15,7 @@ import {
 import localFont from "@next/font/local";
 import { Header } from "components/header";
 import { Footer } from "components/footer/footer";
+import { Analytics } from "@vercel/analytics/react";
 
 declare global {
   interface Window {
@@ -82,6 +83,7 @@ export default function App({ Component, pageProps }: AppProps) {
         </Hydrate>
       </QueryClientProvider>
       <Footer />
+      <Analytics />
     </div>
   );
 }
