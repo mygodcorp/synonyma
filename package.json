@@ -2,6 +2,9 @@
   "name": "synonyma.fr",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "postbuild": "next-sitemap & node next-search.config.js",
     "dev": "next dev",
