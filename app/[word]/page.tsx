@@ -1,13 +1,14 @@
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import getPage from "lib/supabase/queries/get-page-data";
 import { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import WordClient from "./word-client";
 import { HydrationBoundary } from "@tanstack/react-query";
 import {
   DefinedTermJsonLd,
   BreadcrumbJsonLd,
 } from "components/structured-data";
+import createWord from "lib/supabase/mutations/create-word";
 
 // Permet la génération à la demande pour les pages non pré-générées
 export const dynamicParams = true;
@@ -42,11 +43,20 @@ export async function generateMetadata({
   const decodedWord = decodeURIComponent(word);
 
   try {
-    const page = await getPage(decodedWord);
+    let page;
+
+    try {
+      page = await getPage(decodedWord);
+    } catch (e) {
+      // If word not found, create it for metadata generation
+      await createWord(decodedWord);
+      page = await getPage(decodedWord);
+    }
 
     if (!page) {
       return {
-        title: "Page non trouvée",
+        title: `${decodedWord.toUpperCase()} - Synonymes et Antonymes`,
+        description: `Découvrez les synonymes et antonymes du mot "${decodedWord}".`,
       };
     }
 
@@ -93,7 +103,8 @@ export async function generateMetadata({
     };
   } catch (e) {
     return {
-      title: "Page non trouvée",
+      title: `${decodedWord.toUpperCase()} - Synonymes et Antonymes`,
+      description: `Découvrez les synonymes et antonymes du mot "${decodedWord}".`,
     };
   }
 }
@@ -107,44 +118,57 @@ export default async function WordPage({
   const decodedWord = decodeURIComponent(word);
   const queryClient = new QueryClient();
 
+  let pageData;
+
   try {
-    const pageData = await queryClient.fetchQuery({
+    pageData = await queryClient.fetchQuery({
       queryKey: ["word", decodedWord],
       queryFn: () => getPage(decodedWord),
     });
-
-    const dehydratedState = dehydrate(queryClient);
-
-    // Extraire les synonymes et antonymes pour le JSON-LD
-    const synonyms =
-      pageData?.synonymes?.map((s: any) => s.item?.word || s.word) || [];
-    const antonyms =
-      pageData?.antonymes?.map((a: any) => a.item?.word || a.word) || [];
-
-    return (
-      <>
-        <DefinedTermJsonLd
-          word={decodedWord}
-          definition={pageData?.definition || undefined}
-          synonyms={synonyms.slice(0, 10)} // Limiter à 10 pour ne pas surcharger
-          antonyms={antonyms.slice(0, 10)}
-        />
-        <BreadcrumbJsonLd
-          items={[
-            { name: "Accueil", url: "https://synonyma.fr" },
-            {
-              name: decodedWord,
-              url: `https://synonyma.fr/${encodeURIComponent(decodedWord)}`,
-            },
-          ]}
-        />
-        <HydrationBoundary state={dehydratedState}>
-          <WordClient word={decodedWord} />
-        </HydrationBoundary>
-      </>
-    );
   } catch (e) {
-    // If word not found, redirect to generation page
-    redirect(`/generate/${encodeURIComponent(decodedWord)}`);
+    // If word not found, create it automatically
+    try {
+      await createWord(decodedWord);
+
+      // Try to fetch the newly created word
+      pageData = await queryClient.fetchQuery({
+        queryKey: ["word", decodedWord],
+        queryFn: () => getPage(decodedWord),
+      });
+    } catch (createError) {
+      // If we still can't get the word, show 404
+      notFound();
+    }
   }
+
+  const dehydratedState = dehydrate(queryClient);
+
+  // Extraire les synonymes et antonymes pour le JSON-LD
+  const synonyms =
+    pageData?.synonymes?.map((s: any) => s.item?.word || s.word) || [];
+  const antonyms =
+    pageData?.antonymes?.map((a: any) => a.item?.word || a.word) || [];
+
+  return (
+    <>
+      <DefinedTermJsonLd
+        word={decodedWord}
+        definition={pageData?.definition || undefined}
+        synonyms={synonyms.slice(0, 10)} // Limiter à 10 pour ne pas surcharger
+        antonyms={antonyms.slice(0, 10)}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Accueil", url: "https://synonyma.fr" },
+          {
+            name: decodedWord,
+            url: `https://synonyma.fr/${encodeURIComponent(decodedWord)}`,
+          },
+        ]}
+      />
+      <HydrationBoundary state={dehydratedState}>
+        <WordClient word={decodedWord} />
+      </HydrationBoundary>
+    </>
+  );
 }
