@@ -9,11 +9,12 @@ export async function GET(
 ) {
   try {
     const { slug } = await params;
-    
-    if (!slug) {
+    const decodedSlug = decodeURIComponent(slug);
+
+    if (!decodedSlug) {
       throw new Error("Missing word parameter");
     }
-    const page = await getPage(slug);
+    const page = await getPage(decodedSlug);
     return NextResponse.json(page, { status: 201 });
   } catch (error) {
     return NextResponse.json(
