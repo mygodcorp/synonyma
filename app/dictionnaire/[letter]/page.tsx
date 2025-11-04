@@ -6,6 +6,10 @@ import {
 import { Metadata } from "next";
 import DictionaryClient from "./dictionary-client";
 import getDictionary from "lib/supabase/queries/get-dictionary";
+import {
+  CollectionPageJsonLd,
+  BreadcrumbJsonLd,
+} from "components/structured-data";
 
 export const revalidate = 10000;
 
@@ -24,21 +28,43 @@ export async function generateMetadata({
   params: Promise<{ letter: string }>;
 }): Promise<Metadata> {
   const { letter } = await params;
+  const upperLetter = letter.toUpperCase();
   return {
-    title: `Lettre ${letter.toUpperCase()} : Mots et Synonymes qui commencent par la lettre ${letter.toUpperCase()}`,
-    description: `Synonymes des mots de la lettre ${letter.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
+    title: `Lettre ${upperLetter} : Dictionnaire de Mots et Synonymes - Synonyma.fr`,
+    description: `Découvrez tous les mots français commençant par ${upperLetter}. Explorez leurs synonymes et antonymes sur Synonyma.fr, le dictionnaire de référence pour enrichir votre vocabulaire.`,
+    keywords: [
+      `mots lettre ${upperLetter}`,
+      `synonymes ${upperLetter}`,
+      `dictionnaire ${upperLetter}`,
+      "vocabulaire français",
+      `mots commençant par ${upperLetter}`,
+    ],
     alternates: {
       canonical: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/dictionnaire/${letter}`,
     },
     openGraph: {
-      title: `Lettre ${letter.toUpperCase()} : Mots et Synonymes qui commencent par la lettre ${letter.toUpperCase()}`,
-      type: "article",
+      title: `Lettre ${upperLetter} : Dictionnaire de Mots et Synonymes`,
+      type: "website",
+      url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/dictionnaire/${letter}`,
+      siteName: "Synonyma",
+      locale: "fr_FR",
       images: [
         {
           url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${letter}`,
+          width: 1200,
+          height: 630,
+          alt: `Dictionnaire lettre ${upperLetter}`,
         },
       ],
-      description: `Synonymes des mots de la lettre ${letter.toUpperCase()} par Synonyma.fr, la principale source en ligne de synonymes, d'antonymes, et plus encore.`,
+      description: `Découvrez tous les mots français commençant par ${upperLetter}. Explorez leurs synonymes et antonymes.`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Lettre ${upperLetter} - Dictionnaire Synonyma`,
+      description: `Tous les mots français commençant par ${upperLetter} avec leurs synonymes et antonymes`,
+      images: [
+        `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${letter}`,
+      ],
     },
   };
 }
@@ -50,6 +76,7 @@ export default async function Dictionnaire({
 }) {
   const { letter } = await params;
   const queryClient = new QueryClient();
+  const upperLetter = letter.toUpperCase();
 
   try {
     await queryClient.prefetchInfiniteQuery({
@@ -64,9 +91,26 @@ export default async function Dictionnaire({
     const dehydratedState = JSON.parse(JSON.stringify(dehydrate(queryClient)));
 
     return (
-      <HydrationBoundary state={dehydratedState}>
-        <DictionaryClient letter={letter} />
-      </HydrationBoundary>
+      <>
+        <CollectionPageJsonLd
+          name={`Dictionnaire lettre ${upperLetter}`}
+          description={`Collection complète des mots français commençant par la lettre ${upperLetter} avec leurs synonymes et antonymes`}
+          url={`https://synonyma.fr/dictionnaire/${letter}`}
+        />
+        <BreadcrumbJsonLd
+          items={[
+            { name: "Accueil", url: "https://synonyma.fr" },
+            { name: "Dictionnaire", url: "https://synonyma.fr/dictionnaire/a" },
+            {
+              name: `Lettre ${upperLetter}`,
+              url: `https://synonyma.fr/dictionnaire/${letter}`,
+            },
+          ]}
+        />
+        <HydrationBoundary state={dehydratedState}>
+          <DictionaryClient letter={letter} />
+        </HydrationBoundary>
+      </>
     );
   } catch (e) {
     return null;
