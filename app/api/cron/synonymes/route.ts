@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
   try {
     const word = await getRandomWord("synonyme_processed", false);
     const response = await synonymes(word.word);
-    const [{ text: outcome }] = response.data.choices;
+    const outcome = response.choices[0].message.content || "";
     const answer = format(outcome);
     const { data: words } = await upsertWords(answer);
     const { data: result } = await upsertSynonymes(word.id, words as IParams[]);

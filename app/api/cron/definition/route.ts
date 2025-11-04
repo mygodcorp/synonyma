@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   try {
     const word = await getRandomWord("definition_processed", false);
     const response = await definition(word.word);
-    const [{ text: outcome }] = response.data.choices;
+    const outcome = response.choices[0].message.content || "";
     const words = match(outcome);
     await setDone(word.id, { definition_processed: true });
     return NextResponse.json(

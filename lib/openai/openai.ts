@@ -1,7 +1,19 @@
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 
-const configuration = new Configuration({
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-});
+let openaiInstance: OpenAI | null = null;
 
-export const openai = new OpenAIApi(configuration);
+export const openai = {
+  get client() {
+    if (!openaiInstance) {
+      openaiInstance = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+    }
+    return openaiInstance;
+  },
+  chat: {
+    get completions() {
+      return openai.client.chat.completions;
+    },
+  },
+};

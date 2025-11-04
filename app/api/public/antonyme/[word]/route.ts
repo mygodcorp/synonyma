@@ -22,7 +22,7 @@ export async function GET(
     }
     const wordData = await getWord(decodedWord);
     const response = await antonymes(wordData.word);
-    const [{ text: outcome }] = response.data.choices;
+    const outcome = response.choices[0].message.content || "";
     const answer = format(outcome);
     const { data: words } = await upsertWords(answer);
     await upsertAntonymes(wordData.id, words as IParams[]);
