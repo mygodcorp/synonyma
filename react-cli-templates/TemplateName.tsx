@@ -9,7 +9,7 @@ interface TemplateNameProps {
 export const TemplateName = ({
   children,
   ...restProps
-}: TemplateNameProps): JSX.Element => (
+}: TemplateNameProps): React.JSX.Element => (
   <Box as="div" className={styles.root} {...restProps}>
     {children}
   </Box>

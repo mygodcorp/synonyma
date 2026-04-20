@@ -12,7 +12,7 @@ export const Spacer = ({
   space,
   className,
   ...restProps
-}: SpacerProps): JSX.Element => (
+}: SpacerProps): React.JSX.Element => (
   <Box
     as="span"
     className={clsx(styles.root, [styles[space]], className)}

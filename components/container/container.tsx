@@ -8,7 +8,7 @@ import styles from "./container.module.css";
 
 type ContainerComponent = <C extends React.ElementType>(
   props: ContainerProps<C>
-) => JSX.Element | null;
+) => React.JSX.Element | null;
 
 type ContainerProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<

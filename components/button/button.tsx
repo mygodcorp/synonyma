@@ -11,7 +11,7 @@ export const Button = ({
   children,
   onClick,
   ...restProps
-}: ButtonProps): JSX.Element => (
+}: ButtonProps): React.JSX.Element => (
   <Box as="button" onClick={onClick} className={styles.root} {...restProps}>
     {children}
   </Box>

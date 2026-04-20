@@ -11,7 +11,7 @@ export const LineBar = ({
   opacity,
   strong = 1,
   ...restProps
-}: LineBarProps): JSX.Element => (
+}: LineBarProps): React.JSX.Element => (
   <Box
     as="div"
     style={{ opacity: `${opacity}%`, height: `${strong}px` }}

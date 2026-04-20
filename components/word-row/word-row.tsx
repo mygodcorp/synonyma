@@ -11,7 +11,7 @@ interface WordRowProps {
   id?: string;
 }
 
-export const WordRow = ({ word, ...restProps }: WordRowProps): JSX.Element => (
+export const WordRow = ({ word, ...restProps }: WordRowProps): React.JSX.Element => (
   <Container as="li" {...restProps}>
     <Grid.Root columns={3} gap={32}>
       <Grid.Item start={2}>

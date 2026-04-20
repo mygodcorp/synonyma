@@ -12,7 +12,7 @@ export const Skeleton = ({
   w = 10,
   h = 10,
   ...restProps
-}: SkeletonProps): JSX.Element => (
+}: SkeletonProps): React.JSX.Element => (
   <Box
     style={{ width: w, height: h }}
     as="div"

@@ -6,7 +6,7 @@ import React from "react";
 
 type BoxComponent = <C extends React.ElementType>(
   props: BoxProps<C>
-) => JSX.Element | null;
+) => React.JSX.Element | null;
 
 type BoxProps<C extends React.ElementType> = PolymorphicComponentPropWithRef<
   C,

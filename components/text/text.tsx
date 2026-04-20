@@ -8,7 +8,7 @@ import { cva, VariantProps } from "class-variance-authority";
 
 type TextComponent = <C extends React.ElementType>(
   props: TextProps<C>
-) => JSX.Element | null;
+) => React.JSX.Element | null;
 
 type TextProps<C extends React.ElementType> = PolymorphicComponentPropWithRef<
   C,

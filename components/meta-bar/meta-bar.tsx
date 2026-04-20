@@ -13,7 +13,7 @@ export const MetaBar = ({
   label,
   symbol,
   ...restProps
-}: MetaBarProps): JSX.Element => (
+}: MetaBarProps): React.JSX.Element => (
   <Fragment>
     <LineBar strong={2} />
     <Grid.Root columns={3} gap={32}>

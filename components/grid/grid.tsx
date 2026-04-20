@@ -15,7 +15,7 @@ const Grid = ({
   gap = 8,
   align = "center",
   ...restProps
-}: GridProps): JSX.Element => (
+}: GridProps): React.JSX.Element => (
   <Box
     as="div"
     style={{
@@ -41,7 +41,7 @@ const ItemComponent = ({
   start,
   justify = "start",
   ...restProps
-}: ItemComponentProps): JSX.Element => (
+}: ItemComponentProps): React.JSX.Element => (
   <Box
     as="div"
     style={{ gridColumnStart: start, justifySelf: justify }}

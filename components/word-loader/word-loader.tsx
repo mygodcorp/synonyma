@@ -9,7 +9,7 @@ interface WordRowProps {
   children?: ReactNode;
 }
 
-export const WordLoader = ({ ...restProps }: WordRowProps): JSX.Element => (
+export const WordLoader = ({ ...restProps }: WordRowProps): React.JSX.Element => (
   <Container as="li" py="PY-MD" className={styles.root} {...restProps}>
     <Grid.Root columns={3} gap={32}>
       <Grid.Item start={2} justify="stretch">
