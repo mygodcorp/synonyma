@@ -1,118 +1,69 @@
-import {
-  dehydrate,
-  QueryClient,
-  HydrationBoundary,
-} from "@tanstack/react-query";
-import { Metadata } from "next";
-import DictionaryClient from "./dictionary-client";
-import getDictionary from "lib/supabase/queries/get-dictionary";
-import {
-  CollectionPageJsonLd,
-  BreadcrumbJsonLd,
-} from "components/structured-data";
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { LETTERS, wordHref, wordsForLetter, formatNumber } from "@/lib/data";
 
-export const revalidate = 10000;
+const PER_PAGE = 300;
 
-export async function generateStaticParams() {
-  return [
-    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-    "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-  ].map((item) => ({
-    letter: item.toLowerCase(),
-  }));
+type Props = {
+  params: Promise<{ letter: string }>;
+  searchParams: Promise<{ page?: string }>;
+};
+
+export function generateStaticParams() {
+  return LETTERS.map((letter) => ({ letter }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ letter: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { letter } = await params;
-  const upperLetter = letter.toUpperCase();
+  const n = Number((await searchParams).page) || 1;
+  const L = letter.toUpperCase();
   return {
-    title: `Lettre ${upperLetter} : Dictionnaire de Mots et Synonymes - Synonyma.fr`,
-    description: `Découvrez tous les mots français commençant par ${upperLetter}. Explorez leurs synonymes et antonymes sur Synonyma.fr, le dictionnaire de référence pour enrichir votre vocabulaire.`,
-    keywords: [
-      `mots lettre ${upperLetter}`,
-      `synonymes ${upperLetter}`,
-      `dictionnaire ${upperLetter}`,
-      "vocabulaire français",
-      `mots commençant par ${upperLetter}`,
-    ],
-    alternates: {
-      canonical: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/dictionnaire/${letter}`,
-    },
-    openGraph: {
-      title: `Lettre ${upperLetter} : Dictionnaire de Mots et Synonymes`,
-      type: "website",
-      url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/dictionnaire/${letter}`,
-      siteName: "Synonyma",
-      locale: "fr_FR",
-      images: [
-        {
-          url: `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${letter}`,
-          width: 1200,
-          height: 630,
-          alt: `Dictionnaire lettre ${upperLetter}`,
-        },
-      ],
-      description: `Découvrez tous les mots français commençant par ${upperLetter}. Explorez leurs synonymes et antonymes.`,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `Lettre ${upperLetter} - Dictionnaire Synonyma`,
-      description: `Tous les mots français commençant par ${upperLetter} avec leurs synonymes et antonymes`,
-      images: [
-        `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/image/og?word=${letter}`,
-      ],
-    },
+    title: `Synonymes des mots en ${L}${n > 1 ? ` (page ${n})` : ""}`,
+    description: `Liste des mots commençant par ${L} dans le dictionnaire des synonymes Synonyma.`,
+    alternates: { canonical: `/dictionnaire/${letter}${n > 1 ? `?page=${n}` : ""}` },
   };
 }
 
-export default async function Dictionnaire({
-  params,
-}: {
-  params: Promise<{ letter: string }>;
-}) {
+export default async function LetterPage({ params, searchParams }: Props) {
   const { letter } = await params;
-  const queryClient = new QueryClient();
-  const upperLetter = letter.toUpperCase();
+  if (!LETTERS.includes(letter)) notFound();
+  const all = wordsForLetter(letter);
+  const pages = Math.max(1, Math.ceil(all.length / PER_PAGE));
+  const n = Math.min(Math.max(1, Number((await searchParams).page) || 1), pages);
+  const rows = all.slice((n - 1) * PER_PAGE, n * PER_PAGE);
 
-  try {
-    await queryClient.prefetchInfiniteQuery({
-      queryKey: ["words", letter],
-      queryFn: () => getDictionary(letter, 0),
-      initialPageParam: 0,
-      getNextPageParam: (lastPage: PaginatedResponse) => {
-        return lastPage.page;
-      },
-    });
-
-    const dehydratedState = JSON.parse(JSON.stringify(dehydrate(queryClient)));
-
-    return (
-      <>
-        <CollectionPageJsonLd
-          name={`Dictionnaire lettre ${upperLetter}`}
-          description={`Collection complète des mots français commençant par la lettre ${upperLetter} avec leurs synonymes et antonymes`}
-          url={`https://synonyma.fr/dictionnaire/${letter}`}
-        />
-        <BreadcrumbJsonLd
-          items={[
-            { name: "Accueil", url: "https://synonyma.fr" },
-            { name: "Dictionnaire", url: "https://synonyma.fr/dictionnaire/a" },
-            {
-              name: `Lettre ${upperLetter}`,
-              url: `https://synonyma.fr/dictionnaire/${letter}`,
-            },
-          ]}
-        />
-        <HydrationBoundary state={dehydratedState}>
-          <DictionaryClient letter={letter} />
-        </HydrationBoundary>
-      </>
-    );
-  } catch (e) {
-    return null;
-  }
+  return (
+    <>
+      <Header />
+      <main className="page">
+        <h1 className="page__title">Lettre {letter.toUpperCase()}</h1>
+        <p className="page__sub">
+          {formatNumber(all.length)} mots · page {n} sur {pages}
+        </p>
+        <nav className="letters" aria-label="Lettres">
+          {LETTERS.map((l) => (
+            <Link key={l} href={`/dictionnaire/${l}`} aria-current={l === letter ? "page" : undefined}>
+              {l}
+            </Link>
+          ))}
+        </nav>
+        <ul className="wordlist">
+          {rows.map(([w, , s]) => (
+            <li key={w}>
+              <Link href={wordHref(w)} prefetch={false}>{w}</Link>
+              <span>{s}</span>
+            </li>
+          ))}
+        </ul>
+        <nav className="pager" aria-label="Pagination">
+          {n > 1 ? <Link href={`/dictionnaire/${letter}?page=${n - 1}`}>← Page précédente</Link> : <span />}
+          {n < pages ? <Link href={`/dictionnaire/${letter}?page=${n + 1}`}>Page suivante →</Link> : <span />}
+        </nav>
+      </main>
+      <Footer />
+    </>
+  );
 }
