@@ -5,14 +5,16 @@ import { DATA_STATS, formatNumber } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Conditions d’utilisation, sources et licences",
+  description: "Conditions d’utilisation de Synonyma, sources des données (Wiktionnaire, Dicollecte), licences et politique de confidentialité.",
   alternates: { canonical: "/cgu" },
+  openGraph: { url: "/cgu" },
 };
 
 export default function Cgu() {
   return (
     <>
       <Header />
-      <main className="page" style={{ maxWidth: 760 }}>
+      <main id="contenu" className="page" style={{ maxWidth: 760 }}>
         <h1 className="page__title">Conditions d’utilisation</h1>
         <div className="legal">
           <h2>Le service</h2>
@@ -47,6 +49,14 @@ export default function Cgu() {
           </p>
           <p>
             Le code du site est public sur <a href="https://github.com/mygodcorp/synonyma">GitHub</a>.
+          </p>
+
+          <h2 id="confidentialite">Données personnelles et confidentialité</h2>
+          <p>
+            Synonyma ne dépose aucun cookie, ne demande ni compte ni adresse e-mail et n’affiche aucune publicité. La
+            mesure d’audience (Vercel Web Analytics) est agrégée et anonyme : elle ne suit pas les visiteurs d’un site à
+            l’autre. Le choix du thème clair ou sombre est enregistré uniquement dans votre navigateur. Les recherches
+            tapées dans le champ de recherche ne sont pas conservées.
           </p>
 
           <h2>Contact</h2>

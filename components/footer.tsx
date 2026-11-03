@@ -20,32 +20,35 @@ export function Footer() {
           </p>
         </div>
         <div>
-          <h3>Explorer</h3>
+          <h2 className="footer__h">Explorer</h2>
           <ul>
             <li><Link href="/dictionnaire">Dictionnaire A–Z</Link></li>
-            <li><Link href="/hasard" prefetch={false}>Un mot au hasard</Link></li>
+            <li><Link href="/hasard" prefetch={false} rel="nofollow">Un mot au hasard</Link></li>
             <li><Link href="/#plus-consultes">Les plus consultés</Link></li>
           </ul>
         </div>
         <div>
-          <h3>Contribuer</h3>
+          <h2 className="footer__h">Contribuer</h2>
           <ul>
-            <li><a href="https://fr.wiktionary.org/wiki/Wiktionnaire:Page_d%E2%80%99accueil" rel="noopener">Wiktionnaire</a></li>
-            <li><a href="https://grammalecte.net" rel="noopener">Dicollecte</a></li>
+            <li><a href="https://fr.wiktionary.org/wiki/Wiktionnaire:Page_d%E2%80%99accueil" rel="noopener">Le projet Wiktionnaire</a></li>
+            <li><a href="https://grammalecte.net" rel="noopener">Grammalecte / Dicollecte</a></li>
             <li><a href="https://github.com/mygodcorp/synonyma" rel="noopener">Code source</a></li>
           </ul>
         </div>
         <div>
-          <h3>Synonyma</h3>
+          <h2 className="footer__h">Synonyma</h2>
           <ul>
-            <li><Link href="/cgu#sources">Sources et licences</Link></li>
+            <li><Link href="/a-propos">À propos</Link></li>
+            <li><Link href="/a-propos#methode">Méthode éditoriale</Link></li>
+            <li><Link href="/a-propos#contact">Contact</Link></li>
+            <li><Link href="/cgu#confidentialite">Confidentialité</Link></li>
             <li><Link href="/cgu">Conditions d’utilisation</Link></li>
           </ul>
         </div>
       </div>
       <div className="footer__bottom">
         <span>© {new Date().getFullYear()} Synonyma</span>
-        <nav>
+        <nav aria-label="Informations légales">
           <Link href="/cgu">CGU</Link>
           <Link href="/cgu#sources">Données : Wiktionnaire (CC BY-SA) et Dicollecte (LGPL)</Link>
         </nav>

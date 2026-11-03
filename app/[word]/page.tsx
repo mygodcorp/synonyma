@@ -7,7 +7,8 @@ import { Footer } from "@/components/footer";
 import { Toc, type TocItem } from "@/components/toc";
 import { ArticleTools } from "@/components/article-tools";
 import { BookIcon } from "@/components/icons";
-import { getIndex, getPage, resolveWord, richness, wordHref, type Relation } from "@/lib/data";
+import { DATA_STATS, LETTERS, getIndex, getPage, resolveWord, richness, wordHref, type Relation } from "@/lib/data";
+import { JsonLd, WEBSITE, abs, breadcrumb } from "@/lib/jsonld";
 import { POPULAR, WORD_OF_THE_DAY } from "@/lib/featured";
 import { genderLabel, labels } from "@/lib/labels";
 import { coverColor } from "@/lib/palette";
@@ -35,13 +36,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const word = decode((await params).word);
   const page = getPage(word);
   if (!page) return { title: "Mot introuvable", robots: { index: false } };
-  const title = `Synonymes de ${page.w}`;
+  const nSyn = allSynonyms(page).length;
+  const nAnt = allAntonyms(page).length;
+  const title = `Synonyme de ${page.w} : ${nSyn} synonyme${nSyn > 1 ? "s" : ""}${nAnt ? " et antonymes" : ""}`;
   const description = metaDescription(page);
+  const href = wordHref(page.w);
   return {
     title,
     description,
-    alternates: { canonical: wordHref(page.w) },
-    openGraph: { title: `${title} | Synonyma`, description, url: wordHref(page.w), type: "article" },
+    alternates: { canonical: href, types: { "text/markdown": `${href}.md` } },
+    openGraph: { title: `${title} | Synonyma`, description, url: href, type: "article" },
   };
 }
 
@@ -145,30 +149,64 @@ export default async function WordPage({ params }: Props) {
   toc.push({ id: "voisins", label: "Mots voisins" });
   toc.push({ id: "sources", label: "Sources" });
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "DefinedTerm",
-    name: w,
-    description: def?.gloss,
-    inLanguage: "fr",
-    url: wordHref(w),
-    inDefinedTermSet: { "@type": "DefinedTermSet", name: "Synonyma, dictionnaire des synonymes" },
-  };
+  const first = fold(w).charAt(0);
+  const letter = LETTERS.includes(first) ? first : null;
+  const updated = new Date(DATA_STATS.builtAt + "T12:00:00Z").toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  const url = abs(wordHref(w));
+  const jsonLd = [
+    {
+      "@type": "WebPage",
+      "@id": `${url}#webpage`,
+      url,
+      name: `Synonymes de ${w}`,
+      inLanguage: "fr-FR",
+      isPartOf: { "@id": WEBSITE["@id"] },
+      dateModified: DATA_STATS.builtAt,
+      mainEntity: { "@id": `${url}#term` },
+      license: page.entries.length ? "https://creativecommons.org/licenses/by-sa/4.0/" : "https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html",
+    },
+    {
+      "@type": "DefinedTerm",
+      "@id": `${url}#term`,
+      name: w,
+      description: def?.gloss,
+      inLanguage: "fr",
+      url,
+      inDefinedTermSet: { "@type": "DefinedTermSet", "@id": `${abs("/dictionnaire")}#set`, name: "Synonyma, dictionnaire des synonymes", url: abs("/dictionnaire") },
+    },
+    breadcrumb([
+      { name: "Accueil", path: "/" },
+      { name: "Dictionnaire", path: "/dictionnaire" },
+      ...(letter ? [{ name: `Lettre ${letter.toUpperCase()}`, path: `/dictionnaire/${letter}` }] : []),
+      { name: w, path: wordHref(w) },
+    ]),
+  ];
 
   return (
     <>
       <Header />
-      <div className="word-layout">
+      <main id="contenu" className="word-layout">
         <Toc items={toc} />
         <article className="article">
           <header className="article__head">
             <div>
+              <nav className="crumbs" aria-label="Fil d’Ariane">
+                <Link href="/dictionnaire">Dictionnaire</Link>
+                {letter && (
+                  <>
+                    <span aria-hidden>›</span>
+                    <Link href={`/dictionnaire/${letter}`}>Lettre {letter.toUpperCase()}</Link>
+                  </>
+                )}
+              </nav>
               <h1 className="article__title">{w}</h1>
               <p className="article__meta">
                 <BookIcon />
                 <span>
                   {synonyms.length} synonyme{synonyms.length > 1 ? "s" : ""}
                   {antonyms.length > 0 && ` · ${antonyms.length} antonyme${antonyms.length > 1 ? "s" : ""}`}
+                  {" · "}
+                  <time dateTime={DATA_STATS.builtAt}>Mis à jour le {updated}</time>
                   {" · "}D’après {page.entries.length ? `le Wiktionnaire${page.th ? " et Dicollecte" : ""}` : "le thésaurus Dicollecte"}
                 </span>
               </p>
@@ -357,7 +395,7 @@ export default async function WordPage({ params }: Props) {
                 <dt>Source</dt>
                 <dd>
                   {page.entries.length > 0 && (
-                    <a href={`https://fr.wiktionary.org/wiki/${encodeURIComponent(w)}`} rel="noopener">Wiktionnaire</a>
+                    <a href={`https://fr.wiktionary.org/wiki/${encodeURIComponent(w)}`} rel="noopener">Wiktionnaire ({w})</a>
                   )}
                   {page.entries.length > 0 && page.th && ", "}
                   {page.th && "Dicollecte"}
@@ -366,9 +404,9 @@ export default async function WordPage({ params }: Props) {
             </aside>
           </div>
         </article>
-      </div>
+      </main>
       <Footer />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <JsonLd data={jsonLd} />
     </>
   );
 }

@@ -57,3 +57,14 @@ test("manger has Wiktionary definitions and synonyms", () => {
   assert.ok(verbe.senses[0].g.startsWith("Mâcher et avaler"));
   assert.ok(synCount(p) >= 15);
 });
+
+test("inflected forms redirect to an existing lemma page", () => {
+  const forms = JSON.parse(gunzipSync(readFileSync("data/forms.json.gz")));
+  assert.equal(forms["mangeons"], "manger");
+  assert.equal(forms["belles"], "beau");
+  assert.equal(forms["chevaux"], "cheval");
+  for (const [form, lemma] of Object.entries(forms).slice(0, 2000)) {
+    assert.ok(page(lemma), `${form} -> ${lemma}`);
+    assert.ok(!page(form), `${form} has its own page`);
+  }
+});

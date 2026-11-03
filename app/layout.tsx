@@ -16,13 +16,12 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Synonyma — Dictionnaire des synonymes et antonymes français",
+    default: "Dictionnaire des synonymes et antonymes français | Synonyma",
     template: "%s | Synonyma",
   },
   description: SITE.description,
   applicationName: "Synonyma",
-  alternates: { canonical: "/" },
-  openGraph: { type: "website", locale: "fr_FR", siteName: "Synonyma", url: SITE.url },
+  openGraph: { type: "website", locale: "fr_FR", siteName: "Synonyma" },
   twitter: { card: "summary_large_image" },
   formatDetection: { telephone: false, email: false, address: false },
 };
@@ -41,6 +40,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
+        <a className="skip-link" href="#contenu">
+          Aller au contenu
+        </a>
         {children}
         <Analytics />
       </body>

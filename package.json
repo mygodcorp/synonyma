@@ -12,8 +12,8 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "node --test test/*.test.mjs",
-    "data:extract": "mkdir -p .cache && curl -sfL https://kaikki.org/frwiktionary/Fran%C3%A7ais/kaikki.org-dictionary-Fran%C3%A7ais.jsonl | python3 scripts/extract-wiktionary.py > .cache/fr-compact.jsonl && curl -sfL https://raw.githubusercontent.com/LibreOffice/dictionaries/master/fr_FR/dictionaries/thes_fr.dat -o .cache/thes_fr.dat",
-    "data:build": "node scripts/build-data.mjs .cache/fr-compact.jsonl .cache/thes_fr.dat"
+    "data:extract": "mkdir -p .cache && curl -sfL https://kaikki.org/frwiktionary/Fran%C3%A7ais/kaikki.org-dictionary-Fran%C3%A7ais.jsonl | FORMS_OUT=.cache/forms.tsv python3 scripts/extract-wiktionary.py > .cache/fr-compact.jsonl && curl -sfL https://raw.githubusercontent.com/LibreOffice/dictionaries/master/fr_FR/dictionaries/thes_fr.dat -o .cache/thes_fr.dat",
+    "data:build": "node scripts/build-data.mjs .cache/fr-compact.jsonl .cache/thes_fr.dat .cache/forms.tsv"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

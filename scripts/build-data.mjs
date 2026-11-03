@@ -3,7 +3,10 @@
 // and the LibreOffice/Dicollecte French thesaurus (thes_fr.dat, MyThes format)
 // into the sharded, gzipped dataset served by the app (data/).
 //
-//   node scripts/build-data.mjs <fr-compact.jsonl> <thes_fr.dat>
+//   node scripts/build-data.mjs <fr-compact.jsonl> <thes_fr.dat> [forms.tsv]
+//
+// forms.tsv ("form<TAB>lemma", from the extractor) adds data/forms.json.gz so that
+// inflected forms without their own page redirect to their lemma (/mangeons -> /manger).
 //
 // Only words that have at least one synonym or antonym (direct, reverse —
 // another entry lists them — or from the thesaurus) get a page.
@@ -16,6 +19,7 @@ import { fold, shardOf, SHARDS } from "../lib/keys.mjs";
 
 const input = process.argv[2];
 const thesPath = process.argv[3];
+const formsPath = process.argv[4];
 if (!input || !thesPath) {
   console.error("usage: node scripts/build-data.mjs <fr-compact.jsonl> <thes_fr.dat>");
   process.exit(1);
@@ -166,6 +170,18 @@ shards.forEach((s, i) => {
   bytes += buf.length;
   writeFileSync(join(OUT, "entries", `${i.toString(16).padStart(3, "0")}.json.gz`), buf);
 });
+let formsCount = 0;
+if (formsPath) {
+  const score = new Map(index.map((r) => [r[0], r[2] + r[3]]));
+  const forms = {};
+  for (const line of readFileSync(formsPath, "utf8").split("\n")) {
+    const [form, lemma] = line.split("\t");
+    if (!form || !lemma || hasPage.has(form) || !hasPage.has(lemma)) continue;
+    if (!forms[form] || score.get(lemma) > score.get(forms[form])) forms[form] = lemma;
+  }
+  formsCount = Object.keys(forms).length;
+  writeFileSync(join(OUT, "forms.json.gz"), gzipSync(JSON.stringify(forms), { level: 9 }));
+}
 const idx = gzipSync(JSON.stringify(index), { level: 9 });
 writeFileSync(join(OUT, "index.json.gz"), idx);
 writeFileSync(
@@ -174,6 +190,7 @@ writeFileSync(
     {
       words: index.length,
       relations: links,
+      forms: formsCount,
       sources: [
         { name: "Wiktionnaire", via: "kaikki.org", url: "https://fr.wiktionary.org", license: "CC BY-SA 4.0" },
         { name: "Thésaurus français Dicollecte (LibreOffice)", url: "https://grammalecte.net", license: "LGPL 2.1+" },
