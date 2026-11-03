@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { og } from "@/lib/site";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -26,7 +27,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     title: `Mots commençant par ${L} : synonymes et antonymes${n > 1 ? ` (page ${n})` : ""}`,
     description: `Tous les mots commençant par la lettre ${L} dans le dictionnaire des synonymes Synonyma${n > 1 ? `, page ${n}` : ""}. Cliquez sur un mot pour voir ses synonymes, antonymes et définitions.`,
     alternates: { canonical: path },
-    openGraph: { url: path },
+    openGraph: og(path),
   };
 }
 

@@ -68,7 +68,7 @@ export function lowerFirst(s: string) {
 }
 
 /** ~150 characters: what the searcher wants (synonyms) first, then antonyms or the definition. */
-export function metaDescription(p: Page, max = 155): string {
+export function metaDescription(p: Page, max = 140): string {
   const syn = rankedSynonyms(p).map((r) => r.w);
   const ant = allAntonyms(p).map((r) => r.w);
   const def = firstDefinition(p);

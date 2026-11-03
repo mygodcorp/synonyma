@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/site";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { DATA_STATS, formatNumber } from "@/lib/data";
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
   title: "Conditions d’utilisation, sources et licences",
   description: "Conditions d’utilisation de Synonyma, sources des données (Wiktionnaire, Dicollecte), licences et politique de confidentialité.",
   alternates: { canonical: "/cgu" },
-  openGraph: { url: "/cgu" },
+  openGraph: og("/cgu"),
 };
 
 export default function Cgu() {

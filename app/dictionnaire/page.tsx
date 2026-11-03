@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { og } from "@/lib/site";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { DATA_STATS, LETTERS, RESERVED, formatNumber, wordHref, wordsForLetter } from "@/lib/data";
@@ -9,11 +10,11 @@ export const metadata: Metadata = {
   title: "Dictionnaire des synonymes de A à Z",
   description: `Les ${formatNumber(DATA_STATS.words)} mots du dictionnaire des synonymes Synonyma, classés de A à Z, avec leurs synonymes, antonymes et définitions.`,
   alternates: { canonical: "/dictionnaire" },
-  openGraph: { url: "/dictionnaire" },
+  openGraph: og("/dictionnaire"),
 };
 
 /** Most-connected single words for a letter: a useful entry point and a strong internal link. */
-function topWords(letter: string, n = 12) {
+function topWords(letter: string, n = 8) {
   return wordsForLetter(letter)
     .filter(([w]) => !w.includes(" ") && w === w.toLowerCase() && !RESERVED.has(w))
     .sort((a, b) => b[2] + b[3] - (a[2] + a[3]))

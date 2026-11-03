@@ -10,6 +10,7 @@ export const ORGANIZATION = {
   url: SITE.url,
   logo: `${SITE.url}/icon.svg`,
   sameAs: ["https://github.com/mygodcorp/synonyma"],
+  contactPoint: { "@type": "ContactPoint", contactType: "customer support", url: "https://github.com/mygodcorp/synonyma/issues", availableLanguage: "French" },
 };
 
 export const WEBSITE = {

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { og } from "@/lib/site";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { DATA_STATS, formatNumber } from "@/lib/data";
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "Comment Synonyma est construit : sources libres (Wiktionnaire, Dicollecte), méthode de compilation des synonymes et antonymes, mises à jour, limites et contact.",
   alternates: { canonical: "/a-propos" },
-  openGraph: { url: "/a-propos" },
+  openGraph: og("/a-propos"),
 };
 
 export default function About() {
