@@ -15,15 +15,15 @@ export function Header({ home = false }: { home?: boolean }) {
     <header className={home ? "header header--home" : "header"}>
       {home ? <span /> : <Logo />}
       {home ? <span /> : <SearchBox />}
-      <div className="header__end">
+      <nav className="header__end" aria-label="Navigation principale">
         <Link className="nav-link" href="/dictionnaire">
           Dictionnaire
         </Link>
-        <Link className="nav-link" href="/hasard" prefetch={false}>
+        <Link className="nav-link" href="/hasard" prefetch={false} rel="nofollow">
           Au hasard
         </Link>
         <ThemeToggle />
-      </div>
+      </nav>
     </header>
   );
 }

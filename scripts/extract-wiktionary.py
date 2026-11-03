@@ -2,9 +2,14 @@
 
 Input : JSONL on stdin (kaikki.org-dictionary-Français.jsonl, ~3 GB)
 Output: compact JSONL on stdout, one line per (word, part of speech) entry.
+        If FORMS_OUT is set, also writes "form<TAB>lemma" lines for inflected
+        forms ("mangeons" -> "manger"), used to redirect them to their lemma.
 """
 import json
+import os
 import sys
+
+forms_out = open(os.environ["FORMS_OUT"], "w") if os.environ.get("FORMS_OUT") else None
 
 SKIP_POS_PREFIX = ("Forme", "Erreur", "Symbole", "Lettre")
 
@@ -39,6 +44,13 @@ for line in sys.stdin:
     if d.get("lang_code") != "fr":
         continue
     pos_title = d.get("pos_title") or ""
+    if forms_out and pos_title.startswith("Forme"):
+        form = clean(d.get("word"))
+        for s in d.get("senses") or []:
+            for f in s.get("form_of") or []:
+                lemma = clean(f.get("word"))
+                if form and lemma and lemma != form:
+                    forms_out.write(f"{form}\t{lemma}\n")
     if pos_title.startswith(SKIP_POS_PREFIX):
         continue
     senses = []

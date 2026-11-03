@@ -1,4 +1,7 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+import { JsonLd, ORGANIZATION, WEBSITE } from "@/lib/jsonld";
+import { SITE } from "@/lib/site";
 import type { CSSProperties } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -8,9 +11,14 @@ import { ChevronIcon } from "@/components/icons";
 import { DATA_STATS, dayIndex, getIndex, getPage, wordHref, formatNumber } from "@/lib/data";
 import { POPULAR, TRENDING, TRY, WORD_OF_THE_DAY } from "@/lib/featured";
 import { bookColor, coverColor, spineSize } from "@/lib/palette";
-import { allSynonyms, firstDefinition } from "@/lib/summary";
+import { firstDefinition, rankedSynonyms } from "@/lib/summary";
 
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: { url: "/" },
+};
 
 function rotate<T>(list: T[], start: number): T[] {
   return [...list.slice(start), ...list.slice(0, start)];
@@ -21,7 +29,7 @@ export default function Home() {
   const picks = rotate(WORD_OF_THE_DAY, dayIndex(WORD_OF_THE_DAY.length, today)).slice(0, 5);
   const featured = getPage(picks[0])!;
   const featuredDef = firstDefinition(featured);
-  const featuredSyn = allSynonyms(featured).slice(0, 4).map((r) => r.w);
+  const featuredSyn = rankedSynonyms(featured).slice(0, 4).map((r) => r.w);
 
   // Three day-stable discoveries among richly-linked single words.
   const rich = getIndex().filter((r) => r[2] >= 8 && !r[0].includes(" ") && r[0] === r[0].toLowerCase());
@@ -39,7 +47,7 @@ export default function Home() {
   return (
     <>
       <Header home />
-      <main>
+      <main id="contenu">
         <section className="home-hero">
           <div className="home-hero__left">
             <h1 className="wordmark">
@@ -112,14 +120,14 @@ export default function Home() {
               <h2 className="section__title" id="discover-title">À découvrir</h2>
               <p className="section__sub">Trois mots tirés du dictionnaire, renouvelés chaque jour.</p>
             </div>
-            <Link href="/hasard" prefetch={false} className="section__aside">
+            <Link href="/hasard" prefetch={false} rel="nofollow" className="section__aside">
               Un mot au hasard →
             </Link>
           </div>
           <div className="cards">
             {discoveries.map((p) => {
               const def = firstDefinition(p);
-              const syn = allSynonyms(p);
+              const syn = rankedSynonyms(p);
               return (
                 <Link key={p.w} href={wordHref(p.w)} className="card">
                   <div className="card__top">
@@ -151,6 +159,13 @@ export default function Home() {
         </section>
       </main>
       <Footer />
+      <JsonLd
+        data={[
+          WEBSITE,
+          ORGANIZATION,
+          { "@type": "WebPage", "@id": `${SITE.url}/#webpage`, url: SITE.url, name: "Synonyma", isPartOf: { "@id": WEBSITE["@id"] }, inLanguage: "fr-FR", description: SITE.description },
+        ]}
+      />
     </>
   );
 }

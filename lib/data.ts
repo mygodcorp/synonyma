@@ -25,6 +25,7 @@ export type IndexRow = [string, string, number, number];
 export const DATA_STATS = stats as {
   words: number;
   relations: number;
+  forms?: number;
   sources: { name: string; via?: string; url: string; license: string }[];
   builtAt: string;
 };
@@ -68,6 +69,22 @@ export function getPage(word: string): Page | null {
   return readShard(shardOf(word))[word] ?? null;
 }
 
+let formsCache: Record<string, string> | null = null;
+/** Lemma of an inflected form without its own page ("mangeons" -> "manger"), if known. */
+export function lemmaOf(word: string): string | null {
+  if (!formsCache) {
+    try {
+      formsCache = JSON.parse(gunzipSync(readFileSync(join(DATA_DIR, "forms.json.gz"))).toString("utf8"));
+    } catch {
+      formsCache = {};
+    }
+  }
+  return formsCache![word] ?? formsCache![word.toLowerCase()] ?? null;
+}
+
+/** Static routes that shadow a headword of the same name: never list them as word URLs. */
+export const RESERVED = new Set(["dictionnaire", "hasard", "cgu", "a-propos", "api", "llms.txt"]);
+
 /**
  * Resolve what the visitor typed to a real headword.
  * "Ecole" -> "école", "MANGER" -> "manger". Returns null when nothing matches.
@@ -78,6 +95,8 @@ export function resolveWord(raw: string): string | null {
   if (getPage(word)) return word;
   const lower = word.toLowerCase();
   if (getPage(lower)) return lower;
+  const lemma = lemmaOf(word);
+  if (lemma) return lemma;
   const candidates = byFolded().get(fold(word));
   if (!candidates?.length) return null;
   return candidates.find((c) => c === lower) ?? candidates.find((c) => c.toLowerCase() === c) ?? candidates[0];
