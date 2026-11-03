@@ -1,34 +1,50 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Synonyma
 
-## Getting Started
+Dictionnaire ouvert des synonymes et antonymes français : [synonyma.fr](https://synonyma.fr).
 
-First, run the development server:
+- **130 000+ mots**, synonymes, antonymes, définitions, exemples, prononciation et étymologie.
+- Données libres, figées au build : **aucune base de données, aucune clé d’API, aucun appel IA** à l’exécution.
+- Next.js 16 (App Router), pages générées à la demande puis mises en cache (ISR).
+
+## Données
+
+| Source | Contenu | Licence |
+| --- | --- | --- |
+| [Wiktionnaire](https://fr.wiktionary.org), extrait par [kaikki.org](https://kaikki.org/frwiktionary/) | définitions, exemples, API, étymologie, synonymes, antonymes | CC BY-SA 4.0 |
+| [Thésaurus Dicollecte](https://grammalecte.net) (LibreOffice `thes_fr.dat`) | groupes de synonymes | LGPL 2.1+ |
+
+Le jeu de données compilé est versionné dans `data/` (~30 Mo) :
+
+- `data/entries/000…3ff.json.gz` : 1 024 fragments, un mot va dans le fragment `fnv1a(mot) % 1024` (`lib/keys.mjs`).
+- `data/index.json.gz` : `[mot, mot sans accents, nb synonymes, nb antonymes]` trié, pour la recherche et le dictionnaire A–Z.
+- `data/stats.json` : compteurs et date de build.
+
+Un mot a une page s’il a au moins un synonyme ou un antonyme (direct, inverse ou issu du thésaurus).
+
+### Mettre à jour les données
 
 ```bash
-npm run dev
-# or
-yarn dev
+npm run data:extract   # télécharge ~3 Go (Wiktionnaire) en streaming + le thésaurus, écrit .cache/
+npm run data:build     # régénère data/
+npm test               # contrôles d’intégrité
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Développement
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+npm run typecheck && npm test && npm run build
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Variable d’environnement optionnelle : `NEXT_PUBLIC_SITE_URL` (défaut `https://synonyma.fr`).
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Structure
 
-## Learn More
+- `app/[word]` : fiche d’un mot (`/manger`). Les variantes (`/Manger`, `/ecole`) redirigent en 308 vers la forme canonique.
+- `app/api/search` : autocomplétion par préfixe, insensible aux accents.
+- `app/dictionnaire/[letter]` : index alphabétique paginé.
+- `app/hasard` : redirection vers un mot au hasard.
+- `app/sitemap.ts` : sitemaps découpés par tranches de 40 000 URL.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Design inspiré de grokipedia.com (Newsreader + Inter, tokens clair/sombre).

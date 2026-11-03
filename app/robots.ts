@@ -1,51 +1,11 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { getIndex } from "@/lib/data";
+import { SITE } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = `https://${process.env.NEXT_PUBLIC_WEBSITE_URL}`;
-
+  const n = Math.ceil(getIndex().length / 40_000);
   return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: ["/api/", "/_next/", "/private/"],
-      },
-      {
-        userAgent: "Googlebot",
-        allow: "/",
-        disallow: ["/api/", "/_next/", "/private/"],
-        crawlDelay: 0,
-      },
-      {
-        userAgent: "Googlebot-Image",
-        allow: "/",
-      },
-      // Bots pour les moteurs génératifs et AI
-      {
-        userAgent: "GPTBot",
-        allow: "/",
-      },
-      {
-        userAgent: "ChatGPT-User",
-        allow: "/",
-      },
-      {
-        userAgent: "anthropic-ai",
-        allow: "/",
-      },
-      {
-        userAgent: "Claude-Web",
-        allow: "/",
-      },
-      {
-        userAgent: "PerplexityBot",
-        allow: "/",
-      },
-      {
-        userAgent: "Applebot",
-        allow: "/",
-      },
-    ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    rules: [{ userAgent: "*", allow: "/", disallow: ["/api/", "/hasard"] }],
+    sitemap: Array.from({ length: n + 1 }, (_, i) => `${SITE.url}/sitemap/${i}.xml`),
   };
 }
